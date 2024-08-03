@@ -9,8 +9,8 @@ namespace Infrastructure.Repository.Configurations
         public void Configure(EntityTypeBuilder<Regiao> builder)
         {
             builder.ToTable("Regiao");
-            builder.HasKey(p => p.RegiaoId);
-            builder.Property(p => p.RegiaoId).HasColumnType("int").ValueGeneratedNever().UseIdentityColumn();
+            builder.HasKey(p => p.Id);
+            builder.Property(p => p.Id).HasColumnType("int").ValueGeneratedNever().UseIdentityColumn();
             builder.Property(p => p.RegiaoNome).HasColumnType("varchar").IsRequired();
             builder.Property(p => p.RegiaoDdd).HasColumnType("int").IsRequired();
         }

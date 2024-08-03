@@ -1,10 +1,9 @@
-﻿using Core.Entities;
-using Infrastructure.Repository.Configurations;
+﻿using Infrastructure.Repository.Configurations;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repository
 {
-    internal class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : DbContext
     {
         private readonly string _connectionString;
 
@@ -12,9 +11,6 @@ namespace Infrastructure.Repository
         {
             _connectionString = connectionString;
         }
-
-        public DbSet<Contato> Contato { get; set; }
-        public DbSet<Regiao> Regiao { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

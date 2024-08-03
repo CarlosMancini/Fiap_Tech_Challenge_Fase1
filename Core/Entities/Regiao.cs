@@ -1,8 +1,7 @@
 ﻿namespace Core.Entities
 {
-    public class Regiao
+    public class Regiao : EntityBase
     {
-        public int RegiaoId { get; set; }
         public required string RegiaoNome { get; set; }
         public int RegiaoDdd { get; set; }
 

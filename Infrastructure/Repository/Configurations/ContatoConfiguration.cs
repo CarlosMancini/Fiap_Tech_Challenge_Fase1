@@ -9,8 +9,8 @@ namespace Infrastructure.Repository.Configurations
         public void Configure(EntityTypeBuilder<Contato> builder)
         {
             builder.ToTable("Contato");
-            builder.HasKey(p => p.ContatoId);
-            builder.Property(p => p.ContatoId).HasColumnType("int").ValueGeneratedNever().UseIdentityColumn();
+            builder.HasKey(p => p.Id);
+            builder.Property(p => p.Id).HasColumnType("int").ValueGeneratedNever().UseIdentityColumn();
             builder.Property(p => p.ContatoNome).HasColumnType("varchar").IsRequired();
             builder.Property(p => p.ContatoTelefone).HasColumnType("varchar").IsRequired();
             builder.Property(p => p.ContatoEmail).HasColumnType("varchar").IsRequired();
@@ -18,7 +18,7 @@ namespace Infrastructure.Repository.Configurations
 
             builder.HasOne(p => p.Regiao)
             .WithMany(r => r.Contatos)
-            .HasPrincipalKey(r => r.RegiaoId);
+            .HasPrincipalKey(r => r.Id);
         }
     }
 }

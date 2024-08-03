@@ -1,8 +1,7 @@
 ﻿namespace Core.Entities
 {
-    public class Contato
+    public class Contato : EntityBase
     {
-        public int ContatoId { get; set; }
         public required string ContatoNome { get; set; }
         public required string ContatoTelefone { get; set; }
         public required string ContatoEmail { get; set; }

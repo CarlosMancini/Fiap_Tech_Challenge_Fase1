@@ -28,6 +28,8 @@ namespace Fiap_Tech_Challenge_Fase1.Controllers
                     ContatoEmail = input.ContatoEmail
                 };
 
+                // To do: criar service com lógica de identificação do DDD da região a partir do telefone recebido
+
                 _contatoRepository.Cadastrar(contato);
                 return Ok();
             }

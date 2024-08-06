@@ -14,7 +14,7 @@ namespace Infrastructure.Repository.Configurations
             builder.Property(p => p.ContatoNome).HasColumnType("varchar").IsRequired();
             builder.Property(p => p.ContatoTelefone).HasColumnType("varchar").IsRequired();
             builder.Property(p => p.ContatoEmail).HasColumnType("varchar").IsRequired();
-            builder.Property(p => p.DddId).HasColumnType("varchar").IsRequired();
+            builder.Property(p => p.RegiaoId).HasColumnType("int").IsRequired();
 
             builder.HasOne(p => p.Regiao)
             .WithMany(r => r.Contatos)

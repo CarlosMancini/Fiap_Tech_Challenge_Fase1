@@ -1,8 +1,8 @@
 ﻿using Core.Entities;
 
-namespace Core.Repository
+namespace Core.Services
 {
-    public interface IContatoRepository : IRepository<Contato>
+    public interface IContatoService : IService<Contato>
     {
         IList<Contato> ObterPorRegião(int RegiaoId);
     }

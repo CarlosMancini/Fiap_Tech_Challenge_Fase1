@@ -8,5 +8,10 @@ namespace Infrastructure.Repository
         public ContatoRepository(ApplicationDbContext context) : base(context)
         {
         }
+
+        public IList<Contato> ObterPorRegião(int RegiaoId)
+        {
+            return _dbSet.Where(item => item.RegiaoId == RegiaoId).ToList();
+        }
     }
 }

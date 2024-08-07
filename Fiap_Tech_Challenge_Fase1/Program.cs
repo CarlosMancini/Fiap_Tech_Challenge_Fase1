@@ -1,6 +1,6 @@
 using Core.Repository;
+using Fiap_Tech_Challenge_Fase1.Extensions;
 using Infrastructure.Database.Repository;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,10 +12,7 @@ var configuration = new ConfigurationBuilder()
 
 builder.Services.AddControllers();
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ConnectionString"));
-}, ServiceLifetime.Scoped);
+builder.Services.Inject(builder.Configuration);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

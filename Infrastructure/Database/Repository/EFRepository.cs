@@ -2,7 +2,7 @@
 using Core.Repository;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Repository
+namespace Infrastructure.Database.Repository
 {
     public class EFRepository<T> : IRepository<T> where T : EntityBase
     {

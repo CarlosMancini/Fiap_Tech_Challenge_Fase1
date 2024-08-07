@@ -1,7 +1,7 @@
 ﻿using Core.Entities;
 using Core.Repository;
 
-namespace Infrastructure.Repository
+namespace Infrastructure.Database.Repository
 {
     public class ContatoRepository : EFRepository<Contato>, IContatoRepository
     {

@@ -1,7 +1,7 @@
-﻿using Infrastructure.Repository.Configurations;
+﻿using Infrastructure.Database.Repository.Configurations;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Repository
+namespace Infrastructure.Database.Repository
 {
     public class ApplicationDbContext : DbContext
     {

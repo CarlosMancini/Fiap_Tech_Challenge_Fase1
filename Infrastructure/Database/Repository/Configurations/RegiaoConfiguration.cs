@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Repository.Configurations
+namespace Infrastructure.Database.Repository.Configurations
 {
     public class RegiaoConfiguration : IEntityTypeConfiguration<Regiao>
     {

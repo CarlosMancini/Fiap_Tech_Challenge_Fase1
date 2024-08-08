@@ -10,10 +10,10 @@ namespace Infrastructure.Database.Repository.Configurations
         {
             builder.ToTable("Contato");
             builder.HasKey(p => p.Id);
-            builder.Property(p => p.Id).HasColumnType("int").ValueGeneratedNever().UseIdentityColumn();
-            builder.Property(p => p.ContatoNome).HasColumnType("varchar").IsRequired();
-            builder.Property(p => p.ContatoTelefone).HasColumnType("varchar").IsRequired();
-            builder.Property(p => p.ContatoEmail).HasColumnType("varchar").IsRequired();
+            builder.Property(p => p.Id).HasColumnType("int").ValueGeneratedOnAdd();
+            builder.Property(p => p.ContatoNome).HasColumnType("varchar").HasMaxLength(100).IsRequired();
+            builder.Property(p => p.ContatoTelefone).HasColumnType("varchar(11)").HasMaxLength(11).IsRequired();
+            builder.Property(p => p.ContatoEmail).HasColumnType("varchar").HasMaxLength(100).IsRequired();
             builder.Property(p => p.RegiaoId).HasColumnType("int").IsRequired();
 
             builder.HasOne(p => p.Regiao)

@@ -1,9 +1,9 @@
 ﻿using Core.Entities;
 
-namespace Core.Repository
+namespace Core.Interfaces.Repository
 {
     public interface IContatoRepository : IRepository<Contato>
     {
-        IList<Contato> ObterPorRegião(int RegiaoId);
+        IList<Contato> ObterPorRegiao(int RegiaoId);
     }
 }

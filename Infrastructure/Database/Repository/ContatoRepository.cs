@@ -1,5 +1,5 @@
 ﻿using Core.Entities;
-using Core.Repository;
+using Core.Interfaces.Repository;
 
 namespace Infrastructure.Database.Repository
 {
@@ -9,7 +9,7 @@ namespace Infrastructure.Database.Repository
         {
         }
 
-        public IList<Contato> ObterPorRegião(int RegiaoId)
+        public IList<Contato> ObterPorRegiao(int RegiaoId)
         {
             return _dbSet.Where(item => item.RegiaoId == RegiaoId).ToList();
         }

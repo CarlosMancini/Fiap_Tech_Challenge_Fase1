@@ -1,13 +1,13 @@
 ﻿using Core.Entities;
-using Core.Repository;
+using Core.Interfaces.Repository;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Database.Repository
 {
     public class EFRepository<T> : IRepository<T> where T : EntityBase
     {
-        protected ApplicationDbContext _context;
-        protected DbSet<T> _dbSet;
+        protected readonly ApplicationDbContext _context;
+        protected readonly DbSet<T> _dbSet;
 
         public EFRepository(ApplicationDbContext context)
         {
@@ -15,33 +15,37 @@ namespace Infrastructure.Database.Repository
             _dbSet = _context.Set<T>();
         }
 
-        public void Alterar(T entidade)
+        public async Task Alterar(T entidade)
         {
             _dbSet.Update(entidade);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void Cadastrar(T entidade)
+        public async Task Cadastrar(T entidade)
         {
             entidade.DataCriacao = DateTime.Now;
-            _dbSet.Add(entidade);
-            _context.SaveChanges();
+            await _dbSet.AddAsync(entidade);
+            await _context.SaveChangesAsync();
         }
 
-        public void Deletar(int id)
+        public async Task Deletar(int id)
         {
-            _dbSet.Remove(ObterPorId(id));
-            _context.SaveChanges();
+            var entidade = await ObterPorId(id);
+            if (entidade != null)
+            {
+                _dbSet.Remove(entidade);
+                await _context.SaveChangesAsync();
+            }
         }
 
-        public T ObterPorId(int id)
+        public async Task<T> ObterPorId(int id)
         {
-            return _dbSet.FirstOrDefault(entity => entity.Id == id);
+            return await _dbSet.FirstOrDefaultAsync(entity => entity.Id == id);
         }
 
-        public IList<T> ObterTodos()
+        public async Task<IList<T>> ObterTodos()
         {
-            return _dbSet.ToList();
+            return await _dbSet.ToListAsync();
         }
     }
 }

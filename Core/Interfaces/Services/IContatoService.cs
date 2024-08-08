@@ -1,11 +1,11 @@
 ﻿using Core.Entities;
 
-namespace Core.Services
+namespace Core.Interfaces.Services
 {
     public interface IContatoService : IService<Contato>
     {
         Task Cadastrar(Contato entidade);
 
-        IList<Contato> ObterPorRegião(int RegiaoId);
+        IList<Contato> ObterPorRegiao(int RegiaoId);
     }
 }

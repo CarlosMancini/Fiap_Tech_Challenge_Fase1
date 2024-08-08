@@ -1,6 +1,6 @@
 ﻿using Core.Entities;
 using Core.Inptus;
-using Core.Services;
+using Core.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fiap_Tech_Challenge_Fase1.Controllers
@@ -12,7 +12,7 @@ namespace Fiap_Tech_Challenge_Fase1.Controllers
         private readonly IContatoService _contatoService = contatoService;
 
         [HttpPost, Route("[controller]")]
-        public IActionResult Post([FromBody] ContatoInput input)
+        public async Task<IActionResult> Post([FromBody] ContatoInput input)
         {
             try
             {
@@ -22,10 +22,8 @@ namespace Fiap_Tech_Challenge_Fase1.Controllers
                     ContatoTelefone = input.ContatoTelefone,
                     ContatoEmail = input.ContatoEmail
                 };
-
-                // To do: criar service com lógica de identificação do DDD da região a partir do telefone recebido
-
-                _contatoService.Cadastrar(contato);
+                
+                await _contatoService.Cadastrar(contato);
                 return Ok();
             }
             catch (Exception e)
@@ -41,12 +39,10 @@ namespace Fiap_Tech_Challenge_Fase1.Controllers
             {
                 var contato = new Contato()
                 {
-                    Id = input.Id,
                     ContatoNome = input.ContatoNome,
                     ContatoTelefone = input.ContatoTelefone,
                     ContatoEmail = input.ContatoEmail
                 };
-
 
                 _contatoService.Alterar(contato);
                 return Ok();
@@ -57,13 +53,11 @@ namespace Fiap_Tech_Challenge_Fase1.Controllers
             }
         }
 
-
         [HttpGet, Route("[controller]")]
         public IActionResult Get()
         {
             try
             {
-                
                 return Ok(_contatoService.ObterTodos());
             }
             catch (Exception e)
@@ -72,13 +66,11 @@ namespace Fiap_Tech_Challenge_Fase1.Controllers
             }
         }
 
-
         [HttpGet, Route("[controller]/{Id}")]
         public IActionResult GetOne( int Id)
         {
             try
             {
-
                 return Ok(_contatoService.ObterPorId(Id));
             }
             catch (Exception e)
@@ -86,7 +78,6 @@ namespace Fiap_Tech_Challenge_Fase1.Controllers
                 return BadRequest(e);
             }
         }
-
 
         [HttpDelete, Route("[controller]/{Id}")]
         public IActionResult Delete(int Id)
@@ -102,13 +93,12 @@ namespace Fiap_Tech_Challenge_Fase1.Controllers
             }
         }
 
-
         [HttpDelete, Route("[controller]/regions/{Id}")]
         public IActionResult ObterPorRegiao(int Id)
         {
             try
             {
-                return Ok(_contatoService.ObterPorRegião(Id));
+                return Ok(_contatoService.ObterPorRegiao(Id));
             }
             catch (Exception e)
             {

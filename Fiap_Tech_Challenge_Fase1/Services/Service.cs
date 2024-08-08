@@ -1,40 +1,47 @@
 ﻿using Core.Entities;
-using Core.Repository;
-using Core.Services;
+using Core.Interfaces.Repository;
+using Core.Interfaces.Services;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Fiap_Tech_Challenge_Fase1.Services
 {
     public class Service<T> : IService<T> where T : EntityBase
     {
         private readonly IRepository<T> _repository;
-        public Service(IRepository<T> repository) => _repository = repository;
-        public void Alterar(T entidade)
+
+        public Service(IRepository<T> repository)
         {
-            if (entidade.Id == null)
+            _repository = repository;
+        }
+
+        public async Task Alterar(T entidade)
+        {
+            if (entidade.Id == 0)
             {
                 throw new Exception("Sem id enviado");
             }
-            _repository.Alterar(entidade);
+            await _repository.Alterar(entidade);
         }
 
-        public void Cadastrar(T entidade)
+        public async Task Cadastrar(T entidade)
         {
-            _repository.Cadastrar(entidade);
+            await _repository.Cadastrar(entidade);
         }
 
-        public void Deletar(int id)
+        public async Task Deletar(int id)
         {
-            _repository.Deletar(id);
+            await _repository.Deletar(id);
         }
 
-        public T ObterPorId(int id)
+        public async Task<T> ObterPorId(int id)
         {
-            return _repository.ObterPorId(id);
+            return await _repository.ObterPorId(id);
         }
 
-        public IList<T> ObterTodos()
+        public async Task<IList<T>> ObterTodos()
         {
-            return _repository.ObterTodos();
+            return await _repository.ObterTodos();
         }
     }
 }

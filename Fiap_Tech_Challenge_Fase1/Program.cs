@@ -1,6 +1,4 @@
-using Core.Repository;
 using Fiap_Tech_Challenge_Fase1.Extensions;
-using Infrastructure.Database.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,8 +15,6 @@ builder.Services.Inject(builder.Configuration);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-builder.Services.AddScoped<IContatoRepository, ContatoRepository>();
 
 var app = builder.Build();
 

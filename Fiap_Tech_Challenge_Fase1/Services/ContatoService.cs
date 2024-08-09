@@ -35,14 +35,36 @@ namespace Fiap_Tech_Challenge_Fase1.Services
                 await _regiaoRepository.Cadastrar(regiao);
             }
 
-            //entidade.RegiaoId = selectedRegion.Id;
+            entidade.RegiaoId = selectedRegion.Id;
 
             base.Cadastrar(entidade);
         }
 
-        public IList<Contato> ObterPorRegiao(int RegiaoId)
+        public async Task Alterar(Contato entidade)
         {
-            return _contatoRepository.ObterPorRegiao(RegiaoId);
+            int region = Int32.Parse(entidade.ContatoTelefone[..2]);
+            var allRegions = await _regiaoRepository.ObterTodos();
+            var selectedRegion = allRegions.FirstOrDefault(item => item.RegiaoDdd == region);
+
+            if (selectedRegion is null)
+            {
+                var regiaoNome = await this._brasilGateway.BuscarDDDAsync(region);
+                Regiao regiao = new()
+                {
+                    RegiaoNome = regiaoNome,
+                    RegiaoDdd = region,
+                };
+                await _regiaoRepository.Cadastrar(regiao);
+            }
+
+            entidade.RegiaoId = selectedRegion.Id;
+
+            await base.Alterar(entidade);
+        }
+
+        public IList<Contato> ObterPorRegiao(int regiaoId)
+        {
+            return _contatoRepository.ObterPorRegiao(regiaoId);
         }
     }
 }

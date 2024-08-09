@@ -22,7 +22,7 @@ namespace Fiap_Tech_Challenge_Fase1.Controllers
                     ContatoTelefone = input.ContatoTelefone,
                     ContatoEmail = input.ContatoEmail
                 };
-                
+
                 await _contatoService.Cadastrar(contato);
                 return Ok();
             }
@@ -32,19 +32,21 @@ namespace Fiap_Tech_Challenge_Fase1.Controllers
             }
         }
 
-        [HttpPatch, Route("[controller]")]
-        public IActionResult Update([FromBody] ContatoInput input)
+        [HttpPut, Route("[controller]")]
+        public async Task<IActionResult> Update([FromBody] ContatoInput input)
         {
             try
             {
                 var contato = new Contato()
                 {
+                    Id = input.Id,
+                    DataCriacao = DateTime.Now,
                     ContatoNome = input.ContatoNome,
                     ContatoTelefone = input.ContatoTelefone,
                     ContatoEmail = input.ContatoEmail
                 };
 
-                _contatoService.Alterar(contato);
+                await _contatoService.Alterar(contato);
                 return Ok();
             }
             catch (Exception e)
@@ -54,11 +56,12 @@ namespace Fiap_Tech_Challenge_Fase1.Controllers
         }
 
         [HttpGet, Route("[controller]")]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
             try
             {
-                return Ok(_contatoService.ObterTodos());
+                var result = await _contatoService.ObterTodos();
+                return Ok(result);
             }
             catch (Exception e)
             {
@@ -67,11 +70,12 @@ namespace Fiap_Tech_Challenge_Fase1.Controllers
         }
 
         [HttpGet, Route("[controller]/{Id}")]
-        public IActionResult GetOne( int Id)
+        public async Task<IActionResult> GetOne(int Id)
         {
             try
             {
-                return Ok(_contatoService.ObterPorId(Id));
+                var result = await _contatoService.ObterPorId(Id);
+                return Ok(result);
             }
             catch (Exception e)
             {
@@ -80,11 +84,11 @@ namespace Fiap_Tech_Challenge_Fase1.Controllers
         }
 
         [HttpDelete, Route("[controller]/{Id}")]
-        public IActionResult Delete(int Id)
+        public async Task<IActionResult> Delete(int Id)
         {
             try
             {
-                _contatoService.Deletar(Id);
+                await _contatoService.Deletar(Id);
                 return Ok();
             }
             catch (Exception e)
@@ -98,7 +102,8 @@ namespace Fiap_Tech_Challenge_Fase1.Controllers
         {
             try
             {
-                return Ok(_contatoService.ObterPorRegiao(Id));
+                var result = _contatoService.ObterPorRegiao(Id);
+                return Ok(result);
             }
             catch (Exception e)
             {

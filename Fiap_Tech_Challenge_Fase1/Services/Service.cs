@@ -1,8 +1,6 @@
 ﻿using Core.Entities;
 using Core.Interfaces.Repository;
 using Core.Interfaces.Services;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Fiap_Tech_Challenge_Fase1.Services
 {

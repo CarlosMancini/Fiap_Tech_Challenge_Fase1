@@ -37,7 +37,14 @@ namespace Fiap_Tech_Challenge_Fase1.Services
 
             entidade.RegiaoId = selectedRegion.Id;
 
-            base.Cadastrar(entidade);
+            // Verifica se já existe um contato com o mesmo nome e telefone
+            var contatoExistente = await _contatoRepository.ObterPorNomeETelefone(entidade.ContatoNome, entidade.ContatoTelefone);
+            if (contatoExistente != null)
+            {
+                throw new Exception("Já existe um contato com o mesmo nome e telefone.");
+            }
+
+            await base.Cadastrar(entidade);
         }
 
         public async Task Alterar(Contato entidade)

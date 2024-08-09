@@ -1,5 +1,6 @@
 ﻿using Core.Entities;
 using Core.Interfaces.Repository;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Database.Repository
 {
@@ -12,6 +13,11 @@ namespace Infrastructure.Database.Repository
         public IList<Contato> ObterPorRegiao(int RegiaoId)
         {
             return _dbSet.Where(item => item.RegiaoId == RegiaoId).ToList();
+        }
+
+        public async Task<Contato> ObterPorNomeETelefone(string nome, string telefone)
+        {
+            return await _dbSet.FirstOrDefaultAsync(c => c.ContatoNome == nome && c.ContatoTelefone == telefone);
         }
     }
 }

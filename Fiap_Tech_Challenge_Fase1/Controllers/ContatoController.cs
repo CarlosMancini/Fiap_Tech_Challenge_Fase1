@@ -1,5 +1,5 @@
 ﻿using Core.Entities;
-using Core.Inptus;
+using Core.Inputs;
 using Core.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,7 +12,7 @@ namespace Fiap_Tech_Challenge_Fase1.Controllers
         private readonly IContatoService _contatoService = contatoService;
 
         [HttpPost, Route("[controller]")]
-        public async Task<IActionResult> Post([FromBody] ContatoInput input)
+        public async Task<IActionResult> Post([FromBody] ContatoInputCadastrar input)
         {
             try
             {
@@ -33,13 +33,12 @@ namespace Fiap_Tech_Challenge_Fase1.Controllers
         }
 
         [HttpPut, Route("[controller]")]
-        public async Task<IActionResult> Update([FromBody] ContatoInput input)
+        public async Task<IActionResult> Update([FromBody] ContatoInputAtualizar input)
         {
             try
             {
                 var contato = new Contato()
                 {
-                    Id = input.Id,
                     DataCriacao = DateTime.Now,
                     ContatoNome = input.ContatoNome,
                     ContatoTelefone = input.ContatoTelefone,

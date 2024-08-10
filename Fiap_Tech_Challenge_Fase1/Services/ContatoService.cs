@@ -20,39 +20,47 @@ namespace Fiap_Tech_Challenge_Fase1.Services
 
         public async Task Cadastrar(Contato entidade)
         {
+            // Verifica se já existe um contato com o mesmo nome e telefone
+            var contatoExistente = await _contatoRepository.ObterPorNomeETelefone(entidade.ContatoNome, entidade.ContatoTelefone);
+            if (contatoExistente != null)
+            {
+                throw new Exception("Já existe um contato com o mesmo nome e telefone.");
+            }
+
             int region = Int32.Parse(entidade.ContatoTelefone[..2]);
-            var allRegions = await _regiaoRepository.ObterTodos() ?? new List<Regiao>(); // Garante que allRegions não seja nulo
+            var allRegions = await _regiaoRepository.ObterTodos() ?? new List<Regiao>();
 
             var selectedRegion = allRegions.FirstOrDefault(item => item.RegiaoDdd == region);
 
             if (selectedRegion is null)
             {
-                var regiaoNome = await _brasilGateway.BuscarDDDAsync(region);
-                Regiao regiao = new()
+                try
                 {
-                    RegiaoNome = regiaoNome,
-                    RegiaoDdd = region,
-                };
+                    var regiaoNome = await _brasilGateway.BuscarDDDAsync(region);
+                    Regiao regiao = new()
+                    {
+                        RegiaoNome = regiaoNome,
+                        RegiaoDdd = region,
+                    };
 
-                await _regiaoRepository.Cadastrar(regiao);
+                    await _regiaoRepository.Cadastrar(regiao);
 
-                // Após cadastrar a nova região, obtenha novamente a lista de regiões
-                allRegions = await _regiaoRepository.ObterTodos() ?? new List<Regiao>();
-                selectedRegion = allRegions.FirstOrDefault(item => item.RegiaoDdd == region);
+                    // Recarrega todas as regiões
+                    allRegions = await _regiaoRepository.ObterTodos() ?? new List<Regiao>();
+                    selectedRegion = allRegions.FirstOrDefault(item => item.RegiaoDdd == region);
 
-                if (selectedRegion is null)
+                    if (selectedRegion is null)
+                    {
+                        throw new Exception("Erro ao cadastrar a nova região.");
+                    }
+                }
+                catch (Exception)
                 {
                     throw new Exception("Erro ao cadastrar a nova região.");
                 }
             }
 
             entidade.RegiaoId = selectedRegion.Id;
-
-            var contatoExistente = await _contatoRepository.ObterPorNomeETelefone(entidade.ContatoNome, entidade.ContatoTelefone);
-            if (contatoExistente != null)
-            {
-                throw new Exception("Já existe um contato com o mesmo nome e telefone.");
-            }
 
             await base.Cadastrar(entidade);
         }

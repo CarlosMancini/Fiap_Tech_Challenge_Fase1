@@ -23,7 +23,7 @@ namespace Fiap_Tech_Challenge_Fase1.Tests.Services
         }
 
         [Fact]
-        public async Task Cadastrar_ShouldThrowException_WhenContatoAlreadyExists()
+        public async Task Cadastrar_DeveLancarException_QuandoContatoJaExiste()
         {
             // Arrange
             var mockContatoRepository = new Mock<IContatoRepository>();
@@ -32,9 +32,9 @@ namespace Fiap_Tech_Challenge_Fase1.Tests.Services
 
             var contatoExistente = new Contato
             {
-                ContatoNome = "João",
+                ContatoNome = "Bruce Wayne",
                 ContatoTelefone = "11999999999",
-                ContatoEmail = "joao@example.com"
+                ContatoEmail = "bruce.wayne@wayneltda.com.br"
             };
 
             mockContatoRepository
@@ -49,9 +49,9 @@ namespace Fiap_Tech_Challenge_Fase1.Tests.Services
 
             var novoContato = new Contato
             {
-                ContatoNome = "João",
+                ContatoNome = "Bruce Wayne",
                 ContatoTelefone = "11999999999",
-                ContatoEmail = "joao@example.com"
+                ContatoEmail = "bruce.wayne@wayneltda.com.br"
             };
 
             // Act & Assert
@@ -59,10 +59,8 @@ namespace Fiap_Tech_Challenge_Fase1.Tests.Services
             Assert.Equal("Já existe um contato com o mesmo nome e telefone.", exception.Message);
         }
 
-
-
         [Fact]
-        public async Task Cadastrar_ShouldCallRepository_WhenContatoIsValid()
+        public async Task Cadastrar_DeveChamarRepository_QuandoContatoEhValido()
         {
             // Arrange
             var mockContatoRepository = new Mock<IContatoRepository>();
@@ -107,9 +105,9 @@ namespace Fiap_Tech_Challenge_Fase1.Tests.Services
 
             var contato = new Contato
             {
-                ContatoNome = "João",
+                ContatoNome = "Bruce Wayne",
                 ContatoTelefone = "11999999999",
-                ContatoEmail = "joao@example.com"
+                ContatoEmail = "bruce.wayne@wayneltda.com.br"
             };
 
             // Act
@@ -119,10 +117,8 @@ namespace Fiap_Tech_Challenge_Fase1.Tests.Services
             mockContatoRepository.Verify(r => r.Cadastrar(It.IsAny<Contato>()), Times.Once);
         }
 
-
-
         [Fact]
-        public async Task Alterar_ShouldThrowException_WhenContatoAlreadyExists()
+        public async Task Alterar_DeveLancarException_QuandoContatoJaExiste()
         {
             // Arrange
             var contato = new Contato
@@ -147,7 +143,7 @@ namespace Fiap_Tech_Challenge_Fase1.Tests.Services
         }
 
         [Fact]
-        public async Task Alterar_ShouldCallRepository_WhenContatoIsValid()
+        public async Task Alterar_DeveChamarRepository_QuandoContatoEhValido()
         {
             // Arrange
             var contato = new Contato
@@ -181,14 +177,14 @@ namespace Fiap_Tech_Challenge_Fase1.Tests.Services
         }
 
         [Fact]
-        public async Task Cadastrar_ShouldCallCadastrarRegiao_WhenRegiaoIsNew()
+        public async Task Cadastrar_DeveChamarCadastrarRegiao_QuandoRegiaoEhNova()
         {
             // Arrange
             var contato = new Contato
             {
-                ContatoNome = "Nome Teste",
-                ContatoTelefone = "1123456789", // Telefone com DDD 11
-                ContatoEmail = "teste@example.com"
+                ContatoNome = "Bruce Wayne",
+                ContatoTelefone = "1123456789",
+                ContatoEmail = "bruce.wayne@wayneltda.com.br"
             };
 
             int ddd = Int32.Parse(contato.ContatoTelefone[..2]);

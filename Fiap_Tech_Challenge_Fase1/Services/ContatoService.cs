@@ -32,7 +32,16 @@ namespace Fiap_Tech_Challenge_Fase1.Services
                     RegiaoNome = regiaoNome,
                     RegiaoDdd = region,
                 };
+
                 await _regiaoRepository.Cadastrar(regiao);
+
+                // Após cadastrar a nova região, busque-a novamente para obter o Id
+                selectedRegion = (await _regiaoRepository.ObterTodos()).FirstOrDefault(item => item.RegiaoDdd == region);
+
+                if (selectedRegion == null)
+                {
+                    throw new Exception("Erro ao cadastrar a nova região.");
+                }
             }
 
             entidade.RegiaoId = selectedRegion.Id;
@@ -50,24 +59,39 @@ namespace Fiap_Tech_Challenge_Fase1.Services
         public async Task Alterar(Contato entidade)
         {
             int region = Int32.Parse(entidade.ContatoTelefone[..2]);
-            var allRegions = await _regiaoRepository.ObterTodos();
+            var allRegions = await _regiaoRepository.ObterTodos() ?? new List<Regiao>();
             var selectedRegion = allRegions.FirstOrDefault(item => item.RegiaoDdd == region);
 
-            if (selectedRegion is null)
+            if (selectedRegion == null)
             {
-                var regiaoNome = await this._brasilGateway.BuscarDDDAsync(region);
+                var regiaoNome = await _brasilGateway.BuscarDDDAsync(region);
                 Regiao regiao = new()
                 {
                     RegiaoNome = regiaoNome,
                     RegiaoDdd = region,
                 };
-                await _regiaoRepository.Cadastrar(regiao);
+                try
+                {
+                    await _regiaoRepository.Cadastrar(regiao);
+                    selectedRegion = regiao;
+                }
+                catch
+                {
+                    throw new Exception("Erro ao cadastrar a nova região.");
+                }
             }
 
-            entidade.RegiaoId = selectedRegion.Id;
+            entidade.RegiaoId = selectedRegion?.Id ?? throw new Exception("Erro ao associar a região ao contato.");
+
+            var contatoExistente = await _contatoRepository.ObterPorNomeETelefone(entidade.ContatoNome, entidade.ContatoTelefone);
+            if (contatoExistente != null)
+            {
+                throw new Exception("Já existe um contato com o mesmo nome e telefone.");
+            }
 
             await base.Alterar(entidade);
         }
+
 
         public IList<Contato> ObterPorRegiao(int regiaoId)
         {

@@ -1,8 +1,6 @@
 ﻿using Core.Entities;
 using Core.Interfaces.Repository;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Database.Repository
 {

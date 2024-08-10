@@ -55,7 +55,7 @@ namespace Fiap_Tech_Challenge_Fase1.Controllers
         }
 
         [HttpGet, Route("[controller]")]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> ObterTodos()
         {
             try
             {
@@ -69,7 +69,7 @@ namespace Fiap_Tech_Challenge_Fase1.Controllers
         }
 
         [HttpGet, Route("[controller]/{Id}")]
-        public async Task<IActionResult> GetOne(int Id)
+        public async Task<IActionResult> ObterPorId(int Id)
         {
             try
             {
@@ -96,7 +96,7 @@ namespace Fiap_Tech_Challenge_Fase1.Controllers
             }
         }
 
-        [HttpDelete, Route("[controller]/regions/{Id}")]
+        [HttpGet, Route("[controller]/regions/{Id}")]
         public IActionResult ObterPorRegiao(int Id)
         {
             try

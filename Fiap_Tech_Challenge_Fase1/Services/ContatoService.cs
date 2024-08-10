@@ -21,12 +21,13 @@ namespace Fiap_Tech_Challenge_Fase1.Services
         public async Task Cadastrar(Contato entidade)
         {
             int region = Int32.Parse(entidade.ContatoTelefone[..2]);
-            var allRegions = await _regiaoRepository.ObterTodos();
+            var allRegions = await _regiaoRepository.ObterTodos() ?? new List<Regiao>(); // Garante que allRegions não seja nulo
+
             var selectedRegion = allRegions.FirstOrDefault(item => item.RegiaoDdd == region);
 
             if (selectedRegion is null)
             {
-                var regiaoNome = await this._brasilGateway.BuscarDDDAsync(region);
+                var regiaoNome = await _brasilGateway.BuscarDDDAsync(region);
                 Regiao regiao = new()
                 {
                     RegiaoNome = regiaoNome,
@@ -35,10 +36,11 @@ namespace Fiap_Tech_Challenge_Fase1.Services
 
                 await _regiaoRepository.Cadastrar(regiao);
 
-                // Após cadastrar a nova região, busque-a novamente para obter o Id
-                selectedRegion = (await _regiaoRepository.ObterTodos()).FirstOrDefault(item => item.RegiaoDdd == region);
+                // Após cadastrar a nova região, obtenha novamente a lista de regiões
+                allRegions = await _regiaoRepository.ObterTodos() ?? new List<Regiao>();
+                selectedRegion = allRegions.FirstOrDefault(item => item.RegiaoDdd == region);
 
-                if (selectedRegion == null)
+                if (selectedRegion is null)
                 {
                     throw new Exception("Erro ao cadastrar a nova região.");
                 }
@@ -46,7 +48,6 @@ namespace Fiap_Tech_Challenge_Fase1.Services
 
             entidade.RegiaoId = selectedRegion.Id;
 
-            // Verifica se já existe um contato com o mesmo nome e telefone
             var contatoExistente = await _contatoRepository.ObterPorNomeETelefone(entidade.ContatoNome, entidade.ContatoTelefone);
             if (contatoExistente != null)
             {

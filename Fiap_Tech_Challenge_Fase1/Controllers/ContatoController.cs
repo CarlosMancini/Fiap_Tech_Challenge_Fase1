@@ -12,7 +12,7 @@ namespace Fiap_Tech_Challenge_Fase1.Controllers
         private readonly IContatoService _contatoService = contatoService;
 
         [HttpPost, Route("[controller]")]
-        public async Task<IActionResult> Post([FromBody] ContatoInputCadastrar input)
+        public async Task<IActionResult> Cadastrar([FromBody] ContatoInputCadastrar input)
         {
             try
             {
@@ -33,7 +33,7 @@ namespace Fiap_Tech_Challenge_Fase1.Controllers
         }
 
         [HttpPut, Route("[controller]")]
-        public async Task<IActionResult> Update([FromBody] ContatoInputAtualizar input)
+        public async Task<IActionResult> Alterar([FromBody] ContatoInputAtualizar input)
         {
             try
             {

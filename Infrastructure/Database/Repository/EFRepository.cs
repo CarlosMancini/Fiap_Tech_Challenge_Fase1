@@ -18,6 +18,7 @@ namespace Infrastructure.Database.Repository
         public async Task Alterar(T entidade)
         {
             var entidadeOriginal = await ObterPorId(entidade.Id);
+            if (entidadeOriginal is null) throw new Exception("Contato não existe");
             entidade.DataCriacao = entidadeOriginal.DataCriacao;
             _context.Entry(entidadeOriginal).State = EntityState.Detached;
             _dbSet.Update(entidade);
@@ -34,7 +35,7 @@ namespace Infrastructure.Database.Repository
         public async Task Deletar(int id)
         {
             var entidade = await ObterPorId(id);
-            if (entidade != null)
+            if (entidade is not null)
             {
                 _dbSet.Remove(entidade);
                 await _context.SaveChangesAsync();

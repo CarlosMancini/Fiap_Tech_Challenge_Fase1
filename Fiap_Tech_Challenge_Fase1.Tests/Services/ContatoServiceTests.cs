@@ -118,6 +118,45 @@ namespace Fiap_Tech_Challenge_Fase1.Tests.Services
         }
 
         [Fact]
+        public async Task Cadastrar_DeveChamarCadastrarRegiao_QuandoRegiaoEhNova()
+        {
+            // Arrange
+            var contato = new Contato
+            {
+                ContatoNome = "Bruce Wayne",
+                ContatoTelefone = "1123456789",
+                ContatoEmail = "bruce.wayne@wayneltda.com.br"
+            };
+
+            int ddd = Int32.Parse(contato.ContatoTelefone[..2]);
+            string regiaoNome = "São Paulo";
+
+            // Simula que não há nenhuma região existente com o DDD informado
+            _regiaoRepositoryMock
+                .SetupSequence(r => r.ObterTodos())
+                .ReturnsAsync(new List<Regiao>()) // Primeira chamada: Nenhuma região existe
+                .ReturnsAsync(new List<Regiao> { new Regiao { Id = 1, RegiaoDdd = ddd, RegiaoNome = regiaoNome } }); // Segunda chamada: Nova região cadastrada
+
+            // Simula a busca do nome da região baseada no DDD através do gateway
+            _brasilGatewayMock
+                .Setup(g => g.BuscarDDDAsync(ddd))
+                .ReturnsAsync(regiaoNome);
+
+            // Simula o comportamento de cadastrar uma nova região e definir o ID da nova região
+            _regiaoRepositoryMock
+                .Setup(r => r.Cadastrar(It.IsAny<Regiao>()))
+                .Callback<Regiao>(r => r.Id = 1) // Define um ID fictício para a nova região
+                .Returns(Task.CompletedTask);
+
+            // Act
+            await _contatoService.Cadastrar(contato);
+
+            // Assert
+            _regiaoRepositoryMock.Verify(r => r.Cadastrar(It.IsAny<Regiao>()), Times.Once);
+            Assert.Equal(1, contato.RegiaoId); // Verifica se o ID da nova região foi atribuído corretamente ao contato
+        }
+
+        [Fact]
         public async Task Alterar_DeveLancarException_QuandoContatoJaExiste()
         {
             // Arrange
@@ -174,45 +213,6 @@ namespace Fiap_Tech_Challenge_Fase1.Tests.Services
 
             // Assert
             _contatoRepositoryMock.Verify(repo => repo.Alterar(contato), Times.Once);
-        }
-
-        [Fact]
-        public async Task Cadastrar_DeveChamarCadastrarRegiao_QuandoRegiaoEhNova()
-        {
-            // Arrange
-            var contato = new Contato
-            {
-                ContatoNome = "Bruce Wayne",
-                ContatoTelefone = "1123456789",
-                ContatoEmail = "bruce.wayne@wayneltda.com.br"
-            };
-
-            int ddd = Int32.Parse(contato.ContatoTelefone[..2]);
-            string regiaoNome = "São Paulo";
-
-            // Simula que não há nenhuma região existente com o DDD informado
-            _regiaoRepositoryMock
-                .SetupSequence(r => r.ObterTodos())
-                .ReturnsAsync(new List<Regiao>()) // Primeira chamada: Nenhuma região existe
-                .ReturnsAsync(new List<Regiao> { new Regiao { Id = 1, RegiaoDdd = ddd, RegiaoNome = regiaoNome } }); // Segunda chamada: Nova região cadastrada
-
-            // Simula a busca do nome da região baseada no DDD através do gateway
-            _brasilGatewayMock
-                .Setup(g => g.BuscarDDDAsync(ddd))
-                .ReturnsAsync(regiaoNome);
-
-            // Simula o comportamento de cadastrar uma nova região e definir o ID da nova região
-            _regiaoRepositoryMock
-                .Setup(r => r.Cadastrar(It.IsAny<Regiao>()))
-                .Callback<Regiao>(r => r.Id = 1) // Define um ID fictício para a nova região
-                .Returns(Task.CompletedTask);
-
-            // Act
-            await _contatoService.Cadastrar(contato);
-
-            // Assert
-            _regiaoRepositoryMock.Verify(r => r.Cadastrar(It.IsAny<Regiao>()), Times.Once);
-            Assert.Equal(1, contato.RegiaoId); // Verifica se o ID da nova região foi atribuído corretamente ao contato
         }
     }
 }

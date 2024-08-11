@@ -39,7 +39,7 @@ namespace Fiap_Tech_Challenge_Fase1.Controllers
             {
                 var contato = new Contato()
                 {
-                    DataCriacao = DateTime.Now,
+                    Id = input.Id,
                     ContatoNome = input.ContatoNome,
                     ContatoTelefone = input.ContatoTelefone,
                     ContatoEmail = input.ContatoEmail
@@ -54,7 +54,7 @@ namespace Fiap_Tech_Challenge_Fase1.Controllers
             }
         }
 
-        [HttpGet, Route("[controller]")]
+        [HttpGet, Route("obter-todos")]
         public async Task<IActionResult> ObterTodos()
         {
             try

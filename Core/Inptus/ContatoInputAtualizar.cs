@@ -16,7 +16,5 @@ namespace Core.Inputs
         [Required(ErrorMessage = "O e-mail do contato é obrigatório.")]
         [EmailAddress(ErrorMessage = "Formato de e-mail inválido.")]
         public required string ContatoEmail { get; set; }
-
-        public int RegiaoId { get; set; }
     }
 }

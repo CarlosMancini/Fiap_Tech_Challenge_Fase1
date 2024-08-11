@@ -72,16 +72,6 @@ namespace Fiap_Tech_Challenge_Fase1.Services
             var allRegions = await _regiaoRepository.ObterTodos() ?? new List<Regiao>();
             var selectedRegion = allRegions.FirstOrDefault(item => item.RegiaoDdd == region);
 
-            var entidadeOriginal = await _contatoRepository.ObterPorId(entidade.Id);
-
-            if (entidadeOriginal == null)
-            {
-                throw new Exception("Contato não encontrado.");
-            }
-
-            // Mantenha o valor original de DataCriacao
-            entidade.DataCriacao = entidadeOriginal.DataCriacao;
-
             if (selectedRegion == null)
             {
                 var regiaoNome = await _brasilGateway.BuscarDDDAsync(region);

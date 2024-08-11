@@ -17,6 +17,9 @@ namespace Infrastructure.Database.Repository
 
         public async Task Alterar(T entidade)
         {
+            var entidadeOriginal = await ObterPorId(entidade.Id);
+            entidade.DataCriacao = entidadeOriginal.DataCriacao;
+            _context.Entry(entidadeOriginal).State = EntityState.Detached;
             _dbSet.Update(entidade);
             await _context.SaveChangesAsync();
         }

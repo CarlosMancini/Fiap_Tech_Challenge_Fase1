@@ -2,6 +2,7 @@
 using Core.Gateways;
 using Core.Interfaces.Repository;
 using Core.Interfaces.Services;
+using Microsoft.EntityFrameworkCore;
 
 namespace Fiap_Tech_Challenge_Fase1.Services
 {
@@ -110,7 +111,6 @@ namespace Fiap_Tech_Challenge_Fase1.Services
 
             await base.Alterar(entidade);
         }
-
 
         public IList<Contato> ObterPorRegiao(int regiaoId)
         {

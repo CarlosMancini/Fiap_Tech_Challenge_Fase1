@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-public static class TradutorEstado
+﻿public static class TradutorEstado
 {
     private static readonly Dictionary<string, string> EstadoMap = new Dictionary<string, string>
     {

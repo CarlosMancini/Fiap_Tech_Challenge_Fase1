@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Infrastructure.Gateways.Brasil
+﻿namespace Infrastructure.Gateways.Brasil
 {
     public class BaseGateway
     {

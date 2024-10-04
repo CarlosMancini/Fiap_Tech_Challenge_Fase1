@@ -28,6 +28,17 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
+    //"Container (Dockerfile)": {
+    //  "commandName": "Docker",
+    //  "launchBrowser": true,
+    //  "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
+    //  "environmentVariables": {
+    //    "ASPNETCORE_HTTPS_PORTS": "8081",
+    //    "ASPNETCORE_HTTP_PORTS": "8080"
+    //  },
+    //  "publishAllPorts": true,
+    //  "useSSL": true
+
     "Container (Dockerfile)": {
       "commandName": "Docker",
       "launchBrowser": true,
@@ -38,7 +49,8 @@
       "applicationUrl": "http://+:80", // Porta 80 dentro do contêiner
       "publishAllPorts": true,
       "useSSL": false
-    }  
+    }
+  }
   },
   "$schema": "http://json.schemastore.org/launchsettings.json",
   "iisSettings": {

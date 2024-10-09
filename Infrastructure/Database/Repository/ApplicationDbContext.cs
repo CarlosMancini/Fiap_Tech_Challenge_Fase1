@@ -1,4 +1,5 @@
-﻿using Infrastructure.Database.Repository.Configurations;
+﻿using Core.Entities;
+using Infrastructure.Database.Repository.Configurations;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Database.Repository
@@ -9,6 +10,9 @@ namespace Infrastructure.Database.Repository
             : base(options)
         {
         }
+
+        public DbSet<Contato> Contatos { get; set; }
+        public DbSet<Regiao> Regioes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

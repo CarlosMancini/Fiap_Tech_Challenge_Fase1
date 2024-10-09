@@ -5,7 +5,7 @@ using Core.Interfaces.Services;
 using Fiap_Tech_Challenge_Fase1.Services;
 using Moq;
 
-namespace Fiap_Tech_Challenge_Fase1.Tests.Services
+namespace Fiap_Tech_Challenge_Fase1.Tests.UnitTests.Services
 {
     public class ContatoServiceTests
     {
@@ -128,7 +128,7 @@ namespace Fiap_Tech_Challenge_Fase1.Tests.Services
                 ContatoEmail = "bruce.wayne@wayneltda.com.br"
             };
 
-            int ddd = Int32.Parse(contato.ContatoTelefone[..2]);
+            int ddd = int.Parse(contato.ContatoTelefone[..2]);
             string regiaoNome = "São Paulo";
 
             // Simula que não há nenhuma região existente com o DDD informado

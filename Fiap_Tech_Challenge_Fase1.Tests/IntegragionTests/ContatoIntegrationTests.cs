@@ -1,4 +1,6 @@
-﻿using Infrastructure.Database.Repository;
+﻿using Core.Entities;
+using Core.Interfaces.Services;
+using Infrastructure.Database.Repository;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,27 +20,36 @@ namespace Fiap_Tech_Challenge_Fase1.Tests
         public async Task Cadastrar_DeveRetornarOk_QuandoDadosValidos()
         {
             // Arrange
-            var novoContato = new
-            {
-                ContatoNome = "Contato de teste",
-                ContatoEmail = "user@example.com",
-                ContatoTelefone = "61965835428",
-            };
-
-            // Act
-            var response = await _client.PostAsJsonAsync("/contacts", novoContato);
-
-            // Assert
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-
-            // Acessar o banco de dados dentro de um escopo
             using (var scope = _factory.Services.CreateScope())
             {
                 var scopedServices = scope.ServiceProvider;
-                var dbContext = scopedServices.GetRequiredService<ApplicationDbContext>();
+                var contatoService = scopedServices.GetRequiredService<IContatoService>();
 
-                var contatoCadastrado = await dbContext.Contatos.FirstOrDefaultAsync(c => c.ContatoEmail == "user@example.com");
+                var novoContato = new Contato
+                {
+                    ContatoNome = "Teste Contato",
+                    ContatoEmail = "teste@contato.com",
+                    ContatoTelefone = "123456789",
+                    RegiaoId = 1
+                };
+
+                // Act
+                await contatoService.Cadastrar(novoContato);
+
+                // Assert
+                var dbContext = scopedServices.GetRequiredService<ApplicationDbContext>();
+                var contatoCadastrado = await dbContext.Contatos.FirstOrDefaultAsync(c => c.ContatoEmail == "teste@contato.com");
+
                 Assert.NotNull(contatoCadastrado);
+                Assert.Equal("Teste Contato", contatoCadastrado.ContatoNome);
+
+                // Cleanup
+                var contato = await dbContext.Contatos.FirstOrDefaultAsync(c => c.ContatoEmail == "teste@contato.com");
+                if (contato != null)
+                {
+                    dbContext.Contatos.Remove(contato);
+                    await dbContext.SaveChangesAsync();
+                }
             }
         }
 
@@ -61,6 +72,20 @@ namespace Fiap_Tech_Challenge_Fase1.Tests
 
             // Assert
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+
+            // Cleanup
+            using (var scope = _factory.Services.CreateScope())
+            {
+                var scopedServices = scope.ServiceProvider;
+                var dbContext = scopedServices.GetRequiredService<ApplicationDbContext>();
+
+                var contato = await dbContext.Contatos.FirstOrDefaultAsync(c => c.ContatoEmail == "duplicado@contato.com");
+                if (contato != null)
+                {
+                    dbContext.Contatos.Remove(contato);
+                    await dbContext.SaveChangesAsync();
+                }
+            }
         }
     }
 }

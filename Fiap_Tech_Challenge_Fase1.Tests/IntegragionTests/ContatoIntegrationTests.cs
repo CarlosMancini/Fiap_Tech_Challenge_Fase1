@@ -1,57 +1,66 @@
-﻿using Microsoft.AspNetCore.Mvc.Testing;
+﻿using Infrastructure.Database.Repository;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
+using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using System.Net.Http.Json;
-using Xunit;
 
-public class ContatoIntegrationTests : IntegrationTestBase
+namespace Fiap_Tech_Challenge_Fase1.Tests
 {
-    public ContatoIntegrationTests(WebApplicationFactory<Program> factory)
-        : base(factory)
+    public class ContatoIntegrationTests : IntegrationTestBase
     {
-    }
-
-    [Fact]
-    public async Task Cadastrar_DeveRetornarOk_QuandoDadosValidos()
-    {
-        // Arrange
-        var novoContato = new
+        public ContatoIntegrationTests(WebApplicationFactory<Program> factory)
+            : base(factory)
         {
-            ContatoNome = "Teste Contato",
-            ContatoEmail = "teste@contato.com",
-            ContatoTelefone = "123456789",
-            RegiaoId = 1
-        };
+        }
 
-        // Act
-        var response = await _client.PostAsJsonAsync("/api/contatos", novoContato);
-
-        // Assert
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-
-        var contatoCadastrado = await _dbContext.Contatos.FirstOrDefaultAsync(c => c.ContatoEmail == "teste@contato.com");
-        Assert.NotNull(contatoCadastrado);
-    }
-
-    [Fact]
-    public async Task Cadastrar_DeveRetornarBadRequest_QuandoEmailDuplicado()
-    {
-        // Arrange
-        SeedData(); // Insere um contato com o mesmo e-mail no banco de dados
-
-        var contatoDuplicado = new
+        [Fact]
+        public async Task Cadastrar_DeveRetornarOk_QuandoDadosValidos()
         {
-            ContatoNome = "Teste Contato",
-            ContatoEmail = "duplicado@contato.com",
-            ContatoTelefone = "123456789",
-            RegiaoId = 1
-        };
+            // Arrange
+            var novoContato = new
+            {
+                ContatoNome = "Contato de teste",
+                ContatoEmail = "user@example.com",
+                ContatoTelefone = "61965835428",
+            };
 
-        // Act
-        var response = await _client.PostAsJsonAsync("/api/contatos", contatoDuplicado);
+            // Act
+            var response = await _client.PostAsJsonAsync("/contacts", novoContato);
 
-        // Assert
-        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+            // Acessar o banco de dados dentro de um escopo
+            using (var scope = _factory.Services.CreateScope())
+            {
+                var scopedServices = scope.ServiceProvider;
+                var dbContext = scopedServices.GetRequiredService<ApplicationDbContext>();
+
+                var contatoCadastrado = await dbContext.Contatos.FirstOrDefaultAsync(c => c.ContatoEmail == "user@example.com");
+                Assert.NotNull(contatoCadastrado);
+            }
+        }
+
+        [Fact]
+        public async Task Cadastrar_DeveRetornarBadRequest_QuandoNomeETelefoneDuplicado()
+        {
+            // Arrange
+            SeedData();
+
+            var contatoDuplicado = new
+            {
+                ContatoNome = "Teste Contato",
+                ContatoEmail = "duplicado@contato.com",
+                ContatoTelefone = "123456789",
+                RegiaoId = 1,
+            };
+
+            // Act
+            var response = await _client.PostAsJsonAsync("/contacts", contatoDuplicado);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
     }
 }

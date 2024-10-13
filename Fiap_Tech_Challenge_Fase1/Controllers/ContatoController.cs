@@ -7,11 +7,16 @@ namespace Fiap_Tech_Challenge_Fase1.Controllers
 {
     [ApiController]
     [Route("contacts")]
-    public class ContatoController(IContatoService contatoService) : ControllerBase
+    public class ContatoController : ControllerBase
     {
-        private readonly IContatoService _contatoService = contatoService;
+        private readonly IContatoService _contatoService;
 
-        [HttpPost, Route("[controller]")]
+        public ContatoController(IContatoService contatoService)
+        {
+            _contatoService = contatoService;
+        }
+
+        [HttpPost]
         public async Task<IActionResult> Cadastrar([FromBody] ContatoInputCadastrar input)
         {
             try
@@ -28,11 +33,11 @@ namespace Fiap_Tech_Challenge_Fase1.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(e);
+                return BadRequest(e.Message);
             }
         }
 
-        [HttpPut, Route("[controller]")]
+        [HttpPut]
         public async Task<IActionResult> Alterar([FromBody] ContatoInputAtualizar input)
         {
             try
@@ -54,7 +59,7 @@ namespace Fiap_Tech_Challenge_Fase1.Controllers
             }
         }
 
-        [HttpGet, Route("obter-todos")]
+        [HttpGet("obter-todos")]
         public async Task<IActionResult> ObterTodos()
         {
             try
@@ -68,13 +73,13 @@ namespace Fiap_Tech_Challenge_Fase1.Controllers
             }
         }
 
-        [HttpGet, Route("[controller]/{Id}")]
+        [HttpGet("{Id}")]
         public async Task<IActionResult> ObterPorId(int Id)
         {
             try
             {
                 var result = await _contatoService.ObterPorId(Id);
-                return Ok(result);
+                return result != null ? Ok(result) : NotFound(); // Retorna NotFound se não existir
             }
             catch (Exception e)
             {
@@ -82,7 +87,7 @@ namespace Fiap_Tech_Challenge_Fase1.Controllers
             }
         }
 
-        [HttpDelete, Route("[controller]/{Id}")]
+        [HttpDelete("{Id}")]
         public async Task<IActionResult> Delete(int Id)
         {
             try
@@ -96,7 +101,7 @@ namespace Fiap_Tech_Challenge_Fase1.Controllers
             }
         }
 
-        [HttpGet, Route("[controller]/regions/{Id}")]
+        [HttpGet("regions/{Id}")]
         public IActionResult ObterPorRegiao(int Id)
         {
             try

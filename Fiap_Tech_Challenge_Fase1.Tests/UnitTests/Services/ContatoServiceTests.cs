@@ -1,14 +1,9 @@
 using Core.Entities;
-using Core.Gateways;
 using Core.Interfaces.Services;
 using Fiap_Tech_Challenge_Fase1.Services;
 using Infrastructure.Database.Repository;
 using Infrastructure.Gateways.Brasil;
 using Microsoft.EntityFrameworkCore;
-using Moq;
-using System;
-using System.Threading.Tasks;
-using Xunit;
 
 namespace Fiap_Tech_Challenge_Fase1.Tests.UnitTests.Services
 {
@@ -73,27 +68,6 @@ namespace Fiap_Tech_Challenge_Fase1.Tests.UnitTests.Services
             // Assert
             Assert.Contains(_context.Contatos, c => c.ContatoNome == contato.ContatoNome);
         }
-
-        //[Fact]
-        //public async Task Cadastrar_DeveChamarCadastrarRegiao_QuandoRegiaoEhNova()
-        //{
-        //    // Arrange
-        //    var contato = new Contato
-        //    {
-        //        ContatoNome = "Bruce Wayne",
-        //        ContatoTelefone = "1123456789",
-        //        ContatoEmail = "bruce.wayne@wayneltda.com.br"
-        //    };
-
-        //    string regiaoNome = "São Paulo";
-
-        //    // Act
-        //    await _contatoService.Cadastrar(contato);
-
-        //    // Assert
-        //    Assert.NotNull(await _context.Regioes.FirstOrDefaultAsync(r => r.RegiaoNome == regiaoNome));
-        //    Assert.Equal(1, contato.RegiaoId); // Verifica se o ID da nova região foi atribuído corretamente ao contato
-        //}
 
         [Fact]
         public async Task Alterar_DeveLancarException_QuandoContatoJaExiste()

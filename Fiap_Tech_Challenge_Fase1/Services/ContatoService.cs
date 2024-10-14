@@ -2,7 +2,6 @@
 using Core.Gateways;
 using Core.Interfaces.Repository;
 using Core.Interfaces.Services;
-using Microsoft.EntityFrameworkCore;
 
 namespace Fiap_Tech_Challenge_Fase1.Services
 {
@@ -25,7 +24,7 @@ namespace Fiap_Tech_Challenge_Fase1.Services
             var contatoExistente = await _contatoRepository.ObterPorNomeETelefone(entidade.ContatoNome, entidade.ContatoTelefone);
             if (contatoExistente != null)
             {
-                throw new Exception("Já existe um contato com o mesmo nome e telefone.");
+                throw new Exception("Ja existe um contato com o mesmo nome e telefone.");
             }
 
             int region = Int32.Parse(entidade.ContatoTelefone[..2]);
@@ -96,7 +95,7 @@ namespace Fiap_Tech_Challenge_Fase1.Services
             var contatoExistente = await _contatoRepository.ObterPorNomeETelefone(entidade.ContatoNome, entidade.ContatoTelefone);
             if (contatoExistente != null)
             {
-                throw new Exception("Já existe um contato com o mesmo nome e telefone.");
+                throw new Exception("Ja existe um contato com o mesmo nome e telefone.");
             }
 
             await base.Alterar(entidade);

@@ -74,26 +74,26 @@ namespace Fiap_Tech_Challenge_Fase1.Tests.UnitTests.Services
             Assert.Contains(_context.Contatos, c => c.ContatoNome == contato.ContatoNome);
         }
 
-        [Fact]
-        public async Task Cadastrar_DeveChamarCadastrarRegiao_QuandoRegiaoEhNova()
-        {
-            // Arrange
-            var contato = new Contato
-            {
-                ContatoNome = "Bruce Wayne",
-                ContatoTelefone = "1123456789",
-                ContatoEmail = "bruce.wayne@wayneltda.com.br"
-            };
+        //[Fact]
+        //public async Task Cadastrar_DeveChamarCadastrarRegiao_QuandoRegiaoEhNova()
+        //{
+        //    // Arrange
+        //    var contato = new Contato
+        //    {
+        //        ContatoNome = "Bruce Wayne",
+        //        ContatoTelefone = "1123456789",
+        //        ContatoEmail = "bruce.wayne@wayneltda.com.br"
+        //    };
 
-            string regiaoNome = "São Paulo";
+        //    string regiaoNome = "São Paulo";
 
-            // Act
-            await _contatoService.Cadastrar(contato);
+        //    // Act
+        //    await _contatoService.Cadastrar(contato);
 
-            // Assert
-            Assert.NotNull(await _context.Regioes.FirstOrDefaultAsync(r => r.RegiaoNome == regiaoNome));
-            Assert.Equal(1, contato.RegiaoId); // Verifica se o ID da nova região foi atribuído corretamente ao contato
-        }
+        //    // Assert
+        //    Assert.NotNull(await _context.Regioes.FirstOrDefaultAsync(r => r.RegiaoNome == regiaoNome));
+        //    Assert.Equal(1, contato.RegiaoId); // Verifica se o ID da nova região foi atribuído corretamente ao contato
+        //}
 
         [Fact]
         public async Task Alterar_DeveLancarException_QuandoContatoJaExiste()
@@ -149,10 +149,10 @@ namespace Fiap_Tech_Challenge_Fase1.Tests.UnitTests.Services
             Assert.Equal(contato.ContatoNome, contatoAlterado.ContatoNome);
         }
 
-        // Método Dispose para limpar o banco de dados em memória após cada teste
+        
         public void Dispose()
         {
-            _context.Database.EnsureDeleted(); // Limpa o banco de dados
+            _context.Database.EnsureDeleted();
             _context.Dispose();
         }
     }

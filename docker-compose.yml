@@ -2,44 +2,27 @@
   app:
     build:
       context: .
-      #dockerfile: C:\Projetos\FiapTechChalenge\Fiap_Tech_Challenge_Fase1\Dockerfile
       dockerfile: ./Dockerfile
     ports:
       - "8080:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
-      - db
       - prometheus
       - grafana
-    networks:
-      - monitoring
-
-  db:
-    image: postgres:latest
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: fiapdb
-    ports:
-      - "5432:5432"
-    volumes:
-      - db-data:/var/lib/postgresql/data
     networks:
       - monitoring
 
   prometheus:
     image: prom/prometheus:latest
     volumes:
-      #- C:/Projetos/FiapTechChalenge/Fiap_Tech_Challenge_Fase1/prometheus.yml:/etc/prometheus/prometheus.yml 
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml           
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
     networks:
       - monitoring
-
 
   grafana:
     image: grafana/grafana:latest
@@ -53,7 +36,6 @@
       - monitoring
 
 volumes:
-  db-data:
   grafana-data:
 
 networks:

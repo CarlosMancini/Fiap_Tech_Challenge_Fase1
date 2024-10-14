@@ -39,16 +39,17 @@ public class IntegrationTestBase : IClassFixture<WebApplicationFactory<Program>>
             var scopedServices = scope.ServiceProvider;
             var dbContext = scopedServices.GetRequiredService<ApplicationDbContext>();
 
-            // Inserir dados de exemplo
+            // Inserir dados de exemplo no banco em memória
             dbContext.Contatos.Add(new Contato
             {
                 ContatoNome = "Contato Existente",
-                ContatoEmail = "duplicado@contato.com",
-                ContatoTelefone = "123456789",
+                ContatoEmail = "duplicado@contato.com",  // Email duplicado
+                ContatoTelefone = "123456789",  // Telefone duplicado
                 RegiaoId = 1,
                 DataCriacao = DateTime.Now,
             });
-            dbContext.SaveChanges();
+
+            dbContext.SaveChanges(); // Confirma as mudanças no banco em memória
         }
     }
 }

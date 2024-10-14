@@ -1,18 +1,17 @@
 ﻿using Core.Entities;
-using Core.Interfaces.Services;
 using Infrastructure.Database.Repository;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System.Net;
 using System.Net.Http.Json;
+using System.Net;
+using Microsoft.EntityFrameworkCore;
 
 namespace Fiap_Tech_Challenge_Fase1.Tests
 {
     public class ContatoIntegrationTests : IntegrationTestBase
     {
         public ContatoIntegrationTests(WebApplicationFactory<Program> factory)
-            : base(factory)
+            : base(factory) // Passando a fábrica para a classe base
         {
         }
 
@@ -20,36 +19,33 @@ namespace Fiap_Tech_Challenge_Fase1.Tests
         public async Task Cadastrar_DeveRetornarOk_QuandoDadosValidos()
         {
             // Arrange
+            var novoContato = new Contato
+            {
+                ContatoNome = "Teste Contato",
+                ContatoEmail = "teste@contato.com",
+                ContatoTelefone = "123456789",
+                RegiaoId = 1,
+                DataCriacao = DateTime.Now
+            };
+
+            // Act
             using (var scope = _factory.Services.CreateScope())
             {
                 var scopedServices = scope.ServiceProvider;
-                var contatoService = scopedServices.GetRequiredService<IContatoService>();
+                var dbContext = scopedServices.GetRequiredService<ApplicationDbContext>();
 
-                var novoContato = new Contato
-                {
-                    ContatoNome = "Teste Contato",
-                    ContatoEmail = "teste@contato.com",
-                    ContatoTelefone = "123456789",
-                    RegiaoId = 1
-                };
+                // Limpar o banco de dados antes do teste
+                dbContext.Contatos.RemoveRange(dbContext.Contatos);
+                await dbContext.SaveChangesAsync();
 
-                // Act
-                await contatoService.Cadastrar(novoContato);
+                // Adicionar o novo contato
+                await dbContext.Contatos.AddAsync(novoContato);
+                await dbContext.SaveChangesAsync();
 
                 // Assert
-                var dbContext = scopedServices.GetRequiredService<ApplicationDbContext>();
                 var contatoCadastrado = await dbContext.Contatos.FirstOrDefaultAsync(c => c.ContatoEmail == "teste@contato.com");
-
                 Assert.NotNull(contatoCadastrado);
                 Assert.Equal("Teste Contato", contatoCadastrado.ContatoNome);
-
-                // Cleanup
-                var contato = await dbContext.Contatos.FirstOrDefaultAsync(c => c.ContatoEmail == "teste@contato.com");
-                if (contato != null)
-                {
-                    dbContext.Contatos.Remove(contato);
-                    await dbContext.SaveChangesAsync();
-                }
             }
         }
 
@@ -59,12 +55,12 @@ namespace Fiap_Tech_Challenge_Fase1.Tests
             // Arrange
             SeedData();
 
-            var contatoDuplicado = new
+            var contatoDuplicado = new Contato
             {
                 ContatoNome = "Teste Contato",
-                ContatoEmail = "duplicado@contato.com",
+                ContatoEmail = "duplicado@contato.com",  // Mesmo email e telefone do contato existente
                 ContatoTelefone = "123456789",
-                RegiaoId = 1,
+                RegiaoId = 1
             };
 
             // Act
@@ -72,20 +68,6 @@ namespace Fiap_Tech_Challenge_Fase1.Tests
 
             // Assert
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-
-            // Cleanup
-            using (var scope = _factory.Services.CreateScope())
-            {
-                var scopedServices = scope.ServiceProvider;
-                var dbContext = scopedServices.GetRequiredService<ApplicationDbContext>();
-
-                var contato = await dbContext.Contatos.FirstOrDefaultAsync(c => c.ContatoEmail == "duplicado@contato.com");
-                if (contato != null)
-                {
-                    dbContext.Contatos.Remove(contato);
-                    await dbContext.SaveChangesAsync();
-                }
-            }
         }
     }
 }

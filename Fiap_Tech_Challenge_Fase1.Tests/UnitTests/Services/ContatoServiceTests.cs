@@ -1,36 +1,34 @@
 using Core.Entities;
 using Core.Gateways;
-using Core.Interfaces.Repository;
+using Core.Interfaces.Services;
 using Fiap_Tech_Challenge_Fase1.Services;
 using Infrastructure.Database.Repository;
+using Infrastructure.Gateways.Brasil;
 using Microsoft.EntityFrameworkCore;
 using Moq;
+using System;
+using System.Threading.Tasks;
+using Xunit;
 
 namespace Fiap_Tech_Challenge_Fase1.Tests.UnitTests.Services
 {
-    public class ContatoServiceTests
+    public class ContatoServiceTests : IDisposable
     {
-        private readonly ApplicationDbContext _dbContext;
-        private readonly ContatoService _contatoService;
-        private readonly Mock<IRegiaoRepository> _regiaoRepositoryMock;
-        private readonly Mock<IContatoRepository> _contatoRepositoryMock;
-        private readonly Mock<IBrasilGateway> _brasilGatewayMock;
+        private readonly IContatoService _contatoService;
+        private readonly ApplicationDbContext _context;
 
         public ContatoServiceTests()
         {
-            // Configurar o DbContext para usar o banco de dados em memória
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "TestDatabase")
+                .UseInMemoryDatabase("TestDb")
                 .Options;
 
-            _dbContext = new ApplicationDbContext(options);
+            _context = new ApplicationDbContext(options);
+            var contatoRepository = new ContatoRepository(_context);
+            var regiaoRepository = new RegiaoRepository(_context);
+            var brasilGateway = new BrasilGateway();
 
-            _regiaoRepositoryMock = new Mock<IRegiaoRepository>();
-            _contatoRepositoryMock = new Mock<IContatoRepository>();
-            _brasilGatewayMock = new Mock<IBrasilGateway>();
-
-            // Inicializar o serviço de Contato com repositórios mockados
-            _contatoService = new ContatoService(_contatoRepositoryMock.Object, _regiaoRepositoryMock.Object, _brasilGatewayMock.Object);
+            _contatoService = new ContatoService(contatoRepository, regiaoRepository, brasilGateway);
         }
 
         [Fact]
@@ -39,22 +37,18 @@ namespace Fiap_Tech_Challenge_Fase1.Tests.UnitTests.Services
             // Arrange
             var contatoExistente = new Contato
             {
-                ContatoNome = "Teste Contato",
-                ContatoEmail = "teste@contato.com",
-                ContatoTelefone = "61956325874",
-                RegiaoId = 1
+                ContatoNome = "Bruce Wayne",
+                ContatoTelefone = "11999999999",
+                ContatoEmail = "bruce.wayne@wayneltda.com.br"
             };
 
-            // Configurar o repositório para retornar o contato existente
-            _contatoRepositoryMock.Setup(repo => repo.ObterPorNomeETelefone(It.IsAny<string>(), It.IsAny<string>()))
-                                  .ReturnsAsync(contatoExistente);
+            await _contatoService.Cadastrar(contatoExistente);
 
             var novoContato = new Contato
             {
-                ContatoNome = "Teste Contato",
-                ContatoEmail = "outro@contato.com", // Mesmo nome e telefone
-                ContatoTelefone = "61956325874",
-                RegiaoId = 1
+                ContatoNome = "Bruce Wayne",
+                ContatoTelefone = "11999999999",
+                ContatoEmail = "bruce.wayne@wayneltda.com.br"
             };
 
             // Act & Assert
@@ -63,37 +57,103 @@ namespace Fiap_Tech_Challenge_Fase1.Tests.UnitTests.Services
         }
 
         [Fact]
-        public async Task Cadastrar_DeveCadastrarNovoContato_QuandoNaoExisteDuplicata()
+        public async Task Cadastrar_DeveChamarRepository_QuandoContatoEhValido()
         {
             // Arrange
-            var novoContato = new Contato
+            var contato = new Contato
             {
-                ContatoNome = "Teste Novo Contato",
-                ContatoEmail = "novo@contato.com",
-                ContatoTelefone = "117654321",
-                RegiaoId = 1
+                ContatoNome = "Bruce Wayne",
+                ContatoTelefone = "11999999999",
+                ContatoEmail = "bruce.wayne@wayneltda.com.br"
             };
-
-            // Configurar o repositório para não encontrar nenhum contato duplicado
-            _contatoRepositoryMock.Setup(repo => repo.ObterPorNomeETelefone(It.IsAny<string>(), It.IsAny<string>()))
-                                  .ReturnsAsync((Contato)null);
-
-            // Configurar o repositório para encontrar a região existente
-            var regiaoExistente = new Regiao
-            {
-                Id = 1,
-                RegiaoNome = "São Paulo",
-                RegiaoDdd = 11
-            };
-            _regiaoRepositoryMock.Setup(repo => repo.ObterTodos())
-                                 .ReturnsAsync(new List<Regiao> { regiaoExistente });
 
             // Act
-            await _contatoService.Cadastrar(novoContato);
+            await _contatoService.Cadastrar(contato);
 
             // Assert
-            _contatoRepositoryMock.Verify(repo => repo.Cadastrar(It.IsAny<Contato>()), Times.Once);
+            Assert.Contains(_context.Contatos, c => c.ContatoNome == contato.ContatoNome);
+        }
+
+        [Fact]
+        public async Task Cadastrar_DeveChamarCadastrarRegiao_QuandoRegiaoEhNova()
+        {
+            // Arrange
+            var contato = new Contato
+            {
+                ContatoNome = "Bruce Wayne",
+                ContatoTelefone = "1123456789",
+                ContatoEmail = "bruce.wayne@wayneltda.com.br"
+            };
+
+            string regiaoNome = "São Paulo";
+
+            // Act
+            await _contatoService.Cadastrar(contato);
+
+            // Assert
+            Assert.NotNull(await _context.Regioes.FirstOrDefaultAsync(r => r.RegiaoNome == regiaoNome));
+            Assert.Equal(1, contato.RegiaoId); // Verifica se o ID da nova região foi atribuído corretamente ao contato
+        }
+
+        [Fact]
+        public async Task Alterar_DeveLancarException_QuandoContatoJaExiste()
+        {
+            // Arrange
+            var contato = new Contato
+            {
+                Id = 1,
+                ContatoNome = "Bruce Wayne",
+                ContatoTelefone = "12345678901",
+                ContatoEmail = "bruce.wayne@wayneltda.com.br"
+            };
+            var existingContato = new Contato
+            {
+                Id = 2,
+                ContatoNome = "Bruce Wayne",
+                ContatoTelefone = "12345678901",
+                ContatoEmail = "bruce.wayne@wayneltda.com.br"
+            };
+
+            await _context.Contatos.AddAsync(existingContato);
+            await _context.SaveChangesAsync();
+
+            // Act & Assert
+            await Assert.ThrowsAsync<Exception>(() => _contatoService.Alterar(contato));
+        }
+
+        [Fact]
+        public async Task Alterar_DeveChamarRepository_QuandoContatoEhValido()
+        {
+            // Arrange
+            var contato = new Contato
+            {
+                Id = 1,
+                ContatoNome = "Bruce Wayne",
+                ContatoTelefone = "1198563254",
+                ContatoEmail = "bruce.wayne@wayneltda.com.br"
+            };
+
+            var regiao = new Regiao { Id = 1, RegiaoNome = "São Paulo", RegiaoDdd = 11 };
+            await _context.Regioes.AddAsync(regiao);
+            await _context.Contatos.AddAsync(contato);
+            await _context.SaveChangesAsync();
+
+            // Altera telefone do contato
+            contato.ContatoTelefone = "1132336598";
+
+            // Act
+            await _contatoService.Alterar(contato);
+
+            // Assert
+            var contatoAlterado = await _context.Contatos.FindAsync(contato.Id);
+            Assert.Equal(contato.ContatoNome, contatoAlterado.ContatoNome);
+        }
+
+        // Método Dispose para limpar o banco de dados em memória após cada teste
+        public void Dispose()
+        {
+            _context.Database.EnsureDeleted(); // Limpa o banco de dados
+            _context.Dispose();
         }
     }
 }
-

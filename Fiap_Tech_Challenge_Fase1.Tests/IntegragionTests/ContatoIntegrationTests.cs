@@ -1,17 +1,16 @@
 ﻿using Core.Entities;
 using Infrastructure.Database.Repository;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
-using System.Net.Http.Json;
-using System.Net;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
+using System.Net.Http.Json;
 
 namespace Fiap_Tech_Challenge_Fase1.Tests
 {
     public class ContatoIntegrationTests : IntegrationTestBase
     {
         public ContatoIntegrationTests(WebApplicationFactory<Program> factory)
-            : base(factory) // Passando a fábrica para a classe base
+            : base(factory)
         {
         }
 
@@ -28,12 +27,13 @@ namespace Fiap_Tech_Challenge_Fase1.Tests
                 DataCriacao = DateTime.Now
             };
 
-            // Act
-            using (var scope = _factory.Services.CreateScope())
-            {
-                var scopedServices = scope.ServiceProvider;
-                var dbContext = scopedServices.GetRequiredService<ApplicationDbContext>();
+            // Configurando o banco de dados em memória
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: "TestDatabase")
+                .Options;
 
+            using (var dbContext = new ApplicationDbContext(options))
+            {
                 // Limpar o banco de dados antes do teste
                 dbContext.Contatos.RemoveRange(dbContext.Contatos);
                 await dbContext.SaveChangesAsync();
@@ -49,25 +49,46 @@ namespace Fiap_Tech_Challenge_Fase1.Tests
             }
         }
 
+
         [Fact]
         public async Task Cadastrar_DeveRetornarBadRequest_QuandoNomeETelefoneDuplicado()
         {
-            // Arrange
-            SeedData();
+            // Configurando o banco de dados em memória
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: "TestDatabase")
+                .Options;
 
-            var contatoDuplicado = new Contato
+            using (var dbContext = new ApplicationDbContext(options))
             {
-                ContatoNome = "Teste Contato",
-                ContatoEmail = "duplicado@contato.com",  // Mesmo email e telefone do contato existente
-                ContatoTelefone = "123456789",
-                RegiaoId = 1
-            };
+                // Limpar e semear dados no banco de dados em memória
+                dbContext.Contatos.RemoveRange(dbContext.Contatos);
+                await dbContext.SaveChangesAsync();
 
-            // Act
-            var response = await _client.PostAsJsonAsync("/contacts", contatoDuplicado);
+                var contatoExistente = new Contato
+                {
+                    ContatoNome = "Teste Contato",
+                    ContatoEmail = "teste@contato.com",
+                    ContatoTelefone = "123456789",
+                    RegiaoId = 1
+                };
 
-            // Assert
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+                await dbContext.Contatos.AddAsync(contatoExistente);
+                await dbContext.SaveChangesAsync();
+
+                var contatoDuplicado = new Contato
+                {
+                    ContatoNome = "Teste Contato",
+                    ContatoEmail = "duplicado@contato.com",
+                    ContatoTelefone = "123456789", // Mesmo telefone do contato existente
+                    RegiaoId = 1
+                };
+
+                // Act
+                var response = await _client.PostAsJsonAsync("/contacts", contatoDuplicado);
+
+                // Assert
+                Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            }
         }
     }
 }

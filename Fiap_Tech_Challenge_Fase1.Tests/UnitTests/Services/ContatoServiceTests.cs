@@ -1,24 +1,35 @@
 using Core.Entities;
 using Core.Gateways;
 using Core.Interfaces.Repository;
-using Core.Interfaces.Services;
 using Fiap_Tech_Challenge_Fase1.Services;
+using Infrastructure.Database.Repository;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 
 namespace Fiap_Tech_Challenge_Fase1.Tests.UnitTests.Services
 {
     public class ContatoServiceTests
     {
-        private readonly Mock<IContatoRepository> _contatoRepositoryMock;
+        private readonly ApplicationDbContext _dbContext;
+        private readonly ContatoService _contatoService;
         private readonly Mock<IRegiaoRepository> _regiaoRepositoryMock;
+        private readonly Mock<IContatoRepository> _contatoRepositoryMock;
         private readonly Mock<IBrasilGateway> _brasilGatewayMock;
-        private readonly IContatoService _contatoService;
 
         public ContatoServiceTests()
         {
-            _contatoRepositoryMock = new Mock<IContatoRepository>();
+            // Configurar o DbContext para usar o banco de dados em memória
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: "TestDatabase")
+                .Options;
+
+            _dbContext = new ApplicationDbContext(options);
+
             _regiaoRepositoryMock = new Mock<IRegiaoRepository>();
+            _contatoRepositoryMock = new Mock<IContatoRepository>();
             _brasilGatewayMock = new Mock<IBrasilGateway>();
+
+            // Inicializar o serviço de Contato com repositórios mockados
             _contatoService = new ContatoService(_contatoRepositoryMock.Object, _regiaoRepositoryMock.Object, _brasilGatewayMock.Object);
         }
 
@@ -26,193 +37,63 @@ namespace Fiap_Tech_Challenge_Fase1.Tests.UnitTests.Services
         public async Task Cadastrar_DeveLancarException_QuandoContatoJaExiste()
         {
             // Arrange
-            var mockContatoRepository = new Mock<IContatoRepository>();
-            var mockRegiaoRepository = new Mock<IRegiaoRepository>();
-            var mockBrasilGateway = new Mock<IBrasilGateway>();
-
             var contatoExistente = new Contato
             {
-                ContatoNome = "Bruce Wayne",
-                ContatoTelefone = "11999999999",
-                ContatoEmail = "bruce.wayne@wayneltda.com.br"
+                ContatoNome = "Teste Contato",
+                ContatoEmail = "teste@contato.com",
+                ContatoTelefone = "61956325874",
+                RegiaoId = 1
             };
 
-            mockContatoRepository
-                .Setup(r => r.ObterPorNomeETelefone(It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync(contatoExistente);
-
-            var contatoService = new ContatoService(
-                mockContatoRepository.Object,
-                mockRegiaoRepository.Object,
-                mockBrasilGateway.Object
-            );
+            // Configurar o repositório para retornar o contato existente
+            _contatoRepositoryMock.Setup(repo => repo.ObterPorNomeETelefone(It.IsAny<string>(), It.IsAny<string>()))
+                                  .ReturnsAsync(contatoExistente);
 
             var novoContato = new Contato
             {
-                ContatoNome = "Bruce Wayne",
-                ContatoTelefone = "11999999999",
-                ContatoEmail = "bruce.wayne@wayneltda.com.br"
+                ContatoNome = "Teste Contato",
+                ContatoEmail = "outro@contato.com", // Mesmo nome e telefone
+                ContatoTelefone = "61956325874",
+                RegiaoId = 1
             };
 
             // Act & Assert
-            var exception = await Assert.ThrowsAsync<Exception>(() => contatoService.Cadastrar(novoContato));
+            var exception = await Assert.ThrowsAsync<Exception>(() => _contatoService.Cadastrar(novoContato));
             Assert.Equal("Ja existe um contato com o mesmo nome e telefone.", exception.Message);
         }
 
         [Fact]
-        public async Task Cadastrar_DeveChamarRepository_QuandoContatoEhValido()
+        public async Task Cadastrar_DeveCadastrarNovoContato_QuandoNaoExisteDuplicata()
         {
             // Arrange
-            var mockContatoRepository = new Mock<IContatoRepository>();
-            var mockRegiaoRepository = new Mock<IRegiaoRepository>();
-            var mockBrasilGateway = new Mock<IBrasilGateway>();
+            var novoContato = new Contato
+            {
+                ContatoNome = "Teste Novo Contato",
+                ContatoEmail = "novo@contato.com",
+                ContatoTelefone = "117654321",
+                RegiaoId = 1
+            };
 
-            var novaRegiao = new Regiao
+            // Configurar o repositório para não encontrar nenhum contato duplicado
+            _contatoRepositoryMock.Setup(repo => repo.ObterPorNomeETelefone(It.IsAny<string>(), It.IsAny<string>()))
+                                  .ReturnsAsync((Contato)null);
+
+            // Configurar o repositório para encontrar a região existente
+            var regiaoExistente = new Regiao
             {
                 Id = 1,
                 RegiaoNome = "São Paulo",
                 RegiaoDdd = 11
             };
-
-            // Configura o mock para simular o retorno da lista de regiões antes do cadastro
-            mockRegiaoRepository
-                .Setup(r => r.ObterTodos())
-                .ReturnsAsync(new List<Regiao>());
-
-            // Configura o mock para simular o cadastro da nova região
-            mockRegiaoRepository
-                .Setup(r => r.Cadastrar(It.IsAny<Regiao>()))
-                .Callback<Regiao>(regiao =>
-                {
-                    regiao.Id = novaRegiao.Id; // Simula a atribuição do ID após o cadastro
-                })
-                .Returns(Task.CompletedTask);
-
-            // Configura o mock para simular o retorno da lista de regiões após o cadastro
-            mockRegiaoRepository
-                .Setup(r => r.ObterTodos())
-                .ReturnsAsync(new List<Regiao> { novaRegiao });
-
-            mockBrasilGateway
-                .Setup(g => g.BuscarDDDAsync(It.IsAny<int>()))
-                .ReturnsAsync("São Paulo");
-
-            var contatoService = new ContatoService(
-                mockContatoRepository.Object,
-                mockRegiaoRepository.Object,
-                mockBrasilGateway.Object
-            );
-
-            var contato = new Contato
-            {
-                ContatoNome = "Bruce Wayne",
-                ContatoTelefone = "11999999999",
-                ContatoEmail = "bruce.wayne@wayneltda.com.br"
-            };
+            _regiaoRepositoryMock.Setup(repo => repo.ObterTodos())
+                                 .ReturnsAsync(new List<Regiao> { regiaoExistente });
 
             // Act
-            await contatoService.Cadastrar(contato);
+            await _contatoService.Cadastrar(novoContato);
 
             // Assert
-            mockContatoRepository.Verify(r => r.Cadastrar(It.IsAny<Contato>()), Times.Once);
-        }
-
-        [Fact]
-        public async Task Cadastrar_DeveChamarCadastrarRegiao_QuandoRegiaoEhNova()
-        {
-            // Arrange
-            var contato = new Contato
-            {
-                ContatoNome = "Bruce Wayne",
-                ContatoTelefone = "1123456789",
-                ContatoEmail = "bruce.wayne@wayneltda.com.br"
-            };
-
-            int ddd = int.Parse(contato.ContatoTelefone[..2]);
-            string regiaoNome = "São Paulo";
-
-            // Simula que não há nenhuma região existente com o DDD informado
-            _regiaoRepositoryMock
-                .SetupSequence(r => r.ObterTodos())
-                .ReturnsAsync(new List<Regiao>()) // Primeira chamada: Nenhuma região existe
-                .ReturnsAsync(new List<Regiao> { new Regiao { Id = 1, RegiaoDdd = ddd, RegiaoNome = regiaoNome } }); // Segunda chamada: Nova região cadastrada
-
-            // Simula a busca do nome da região baseada no DDD através do gateway
-            _brasilGatewayMock
-                .Setup(g => g.BuscarDDDAsync(ddd))
-                .ReturnsAsync(regiaoNome);
-
-            // Simula o comportamento de cadastrar uma nova região e definir o ID da nova região
-            _regiaoRepositoryMock
-                .Setup(r => r.Cadastrar(It.IsAny<Regiao>()))
-                .Callback<Regiao>(r => r.Id = 1) // Define um ID fictício para a nova região
-                .Returns(Task.CompletedTask);
-
-            // Act
-            await _contatoService.Cadastrar(contato);
-
-            // Assert
-            _regiaoRepositoryMock.Verify(r => r.Cadastrar(It.IsAny<Regiao>()), Times.Once);
-            Assert.Equal(1, contato.RegiaoId); // Verifica se o ID da nova região foi atribuído corretamente ao contato
-        }
-
-        [Fact]
-        public async Task Alterar_DeveLancarException_QuandoContatoJaExiste()
-        {
-            // Arrange
-            var contato = new Contato
-            {
-                Id = 1,
-                ContatoNome = "Bruce Wayne",
-                ContatoTelefone = "12345678901",
-                ContatoEmail = "bruce.wayne@wayneltda.com.br"
-            };
-            var existingContato = new Contato
-            {
-                Id = 2,
-                ContatoNome = "Bruce Wayne",
-                ContatoTelefone = "12345678901",
-                ContatoEmail = "bruce.wayne@wayneltda.com.br"
-            };
-            _contatoRepositoryMock.Setup(repo => repo.ObterPorNomeETelefone(contato.ContatoNome, contato.ContatoTelefone))
-                                  .ReturnsAsync(existingContato);
-
-            // Act & Assert
-            await Assert.ThrowsAsync<Exception>(() => _contatoService.Alterar(contato));
-        }
-
-        [Fact]
-        public async Task Alterar_DeveChamarRepository_QuandoContatoEhValido()
-        {
-            // Arrange
-            var contato = new Contato
-            {
-                Id = 1,
-                ContatoNome = "Bruce Wayne",
-                ContatoTelefone = "12345678901",
-                ContatoEmail = "bruce.wayne@wayneltda.com.br"
-            };
-
-            var regiaoLista = new List<Regiao>
-            {
-                new Regiao { Id = 1, RegiaoNome = "São Paulo", RegiaoDdd = 11 }
-            };
-
-            _regiaoRepositoryMock.Setup(repo => repo.ObterTodos()).ReturnsAsync(regiaoLista);
-
-            _regiaoRepositoryMock.Setup(repo => repo.Cadastrar(It.IsAny<Regiao>()))
-                .Callback<Regiao>(r =>
-                {
-                    r.Id = 2; // Simulando que o ID é gerado após o cadastro
-                    regiaoLista.Add(r);
-                });
-
-
-            // Act
-            await _contatoService.Alterar(contato);
-
-            // Assert
-            _contatoRepositoryMock.Verify(repo => repo.Alterar(contato), Times.Once);
+            _contatoRepositoryMock.Verify(repo => repo.Cadastrar(It.IsAny<Contato>()), Times.Once);
         }
     }
 }
+

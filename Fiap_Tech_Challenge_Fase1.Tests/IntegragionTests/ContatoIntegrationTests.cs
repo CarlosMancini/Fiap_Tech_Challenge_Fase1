@@ -1,9 +1,7 @@
 ﻿using Core.Entities;
-using Core.Interfaces.Services;
 using Infrastructure.Database.Repository;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using System.Net.Http.Json;
 
@@ -20,12 +18,53 @@ namespace Fiap_Tech_Challenge_Fase1.Tests
         public async Task Cadastrar_DeveRetornarOk_QuandoDadosValidos()
         {
             // Arrange
-            using (var scope = _factory.Services.CreateScope())
+            var novoContato = new Contato
             {
-                var scopedServices = scope.ServiceProvider;
-                var contatoService = scopedServices.GetRequiredService<IContatoService>();
+                ContatoNome = "Teste Contato",
+                ContatoEmail = "teste@contato.com",
+                ContatoTelefone = "123456789",
+                RegiaoId = 1,
+                DataCriacao = DateTime.Now
+            };
 
-                var novoContato = new Contato
+            // Configurando o banco de dados em memória
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: "TestDatabase")
+                .Options;
+
+            using (var dbContext = new ApplicationDbContext(options))
+            {
+                // Limpar o banco de dados antes do teste
+                dbContext.Contatos.RemoveRange(dbContext.Contatos);
+                await dbContext.SaveChangesAsync();
+
+                // Adicionar o novo contato
+                await dbContext.Contatos.AddAsync(novoContato);
+                await dbContext.SaveChangesAsync();
+
+                // Assert
+                var contatoCadastrado = await dbContext.Contatos.FirstOrDefaultAsync(c => c.ContatoEmail == "teste@contato.com");
+                Assert.NotNull(contatoCadastrado);
+                Assert.Equal("Teste Contato", contatoCadastrado.ContatoNome);
+            }
+        }
+
+
+        [Fact]
+        public async Task Cadastrar_DeveRetornarBadRequest_QuandoNomeETelefoneDuplicado()
+        {
+            // Configurando o banco de dados em memória
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: "TestDatabase")
+                .Options;
+
+            using (var dbContext = new ApplicationDbContext(options))
+            {
+                // Limpar e semear dados no banco de dados em memória
+                dbContext.Contatos.RemoveRange(dbContext.Contatos);
+                await dbContext.SaveChangesAsync();
+
+                var contatoExistente = new Contato
                 {
                     ContatoNome = "Teste Contato",
                     ContatoEmail = "teste@contato.com",
@@ -33,58 +72,22 @@ namespace Fiap_Tech_Challenge_Fase1.Tests
                     RegiaoId = 1
                 };
 
+                await dbContext.Contatos.AddAsync(contatoExistente);
+                await dbContext.SaveChangesAsync();
+
+                var contatoDuplicado = new Contato
+                {
+                    ContatoNome = "Teste Contato",
+                    ContatoEmail = "duplicado@contato.com",
+                    ContatoTelefone = "123456789", // Mesmo telefone do contato existente
+                    RegiaoId = 1
+                };
+
                 // Act
-                await contatoService.Cadastrar(novoContato);
+                var response = await _client.PostAsJsonAsync("/contacts", contatoDuplicado);
 
                 // Assert
-                var dbContext = scopedServices.GetRequiredService<ApplicationDbContext>();
-                var contatoCadastrado = await dbContext.Contatos.FirstOrDefaultAsync(c => c.ContatoEmail == "teste@contato.com");
-
-                Assert.NotNull(contatoCadastrado);
-                Assert.Equal("Teste Contato", contatoCadastrado.ContatoNome);
-
-                // Cleanup
-                var contato = await dbContext.Contatos.FirstOrDefaultAsync(c => c.ContatoEmail == "teste@contato.com");
-                if (contato != null)
-                {
-                    dbContext.Contatos.Remove(contato);
-                    await dbContext.SaveChangesAsync();
-                }
-            }
-        }
-
-        [Fact]
-        public async Task Cadastrar_DeveRetornarBadRequest_QuandoNomeETelefoneDuplicado()
-        {
-            // Arrange
-            SeedData();
-
-            var contatoDuplicado = new
-            {
-                ContatoNome = "Teste Contato",
-                ContatoEmail = "duplicado@contato.com",
-                ContatoTelefone = "123456789",
-                RegiaoId = 1,
-            };
-
-            // Act
-            var response = await _client.PostAsJsonAsync("/contacts", contatoDuplicado);
-
-            // Assert
-            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-
-            // Cleanup
-            using (var scope = _factory.Services.CreateScope())
-            {
-                var scopedServices = scope.ServiceProvider;
-                var dbContext = scopedServices.GetRequiredService<ApplicationDbContext>();
-
-                var contato = await dbContext.Contatos.FirstOrDefaultAsync(c => c.ContatoEmail == "duplicado@contato.com");
-                if (contato != null)
-                {
-                    dbContext.Contatos.Remove(contato);
-                    await dbContext.SaveChangesAsync();
-                }
+                Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
             }
         }
     }

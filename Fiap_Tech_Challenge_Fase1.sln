@@ -15,13 +15,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E3DEB49B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fiap_Tech_Challenge_Fase1.Tests", "Fiap_Tech_Challenge_Fase1.Tests\Fiap_Tech_Challenge_Fase1.Tests.csproj", "{7206F4D0-2446-4E80-BAEC-246EF6504518}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D317E30F-6F3D-4101-9C51-14861EC1BBD6}"
-	ProjectSection(SolutionItems) = preProject
-		docker-compose.yml = docker-compose.yml
-		Dockerfile = Dockerfile
-		prometheus.yml = prometheus.yml
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

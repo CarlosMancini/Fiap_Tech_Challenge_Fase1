@@ -30,7 +30,7 @@ public class Program
         }
 
         // Configurar as métricas
-        app.UseHttpMetrics(); // Coleta métricas de requisições HTTP, como latência e número de requisições
+        app.UseHttpMetrics();
 
         app.UseAuthorization();
         // Ordem correta dos middlewares

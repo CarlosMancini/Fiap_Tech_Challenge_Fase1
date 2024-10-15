@@ -1,4 +1,6 @@
 using Fiap_Tech_Challenge_Fase1.Extensions;
+using Microsoft.AspNetCore.Builder;
+using Prometheus;
 
 public class Program
 {
@@ -27,11 +29,21 @@ public class Program
             app.UseSwaggerUI();
         }
 
-        app.UseHttpsRedirection();
+        // Configurar as métricas
+        app.UseHttpMetrics(); // Coleta métricas de requisições HTTP, como latência e número de requisições
 
         app.UseAuthorization();
+        // Ordem correta dos middlewares
+        app.UseRouting();
+        app.UseAuthorization();
 
-        app.MapControllers();
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers(); // Mapeia os controllers
+            endpoints.MapMetrics(); // Configura o endpoint /metrics
+        });
+
+        app.UseHttpsRedirection();
 
         app.Run();
     }

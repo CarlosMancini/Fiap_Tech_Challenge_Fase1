@@ -6,7 +6,8 @@ IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((hostContext, services) =>
     {
         var configuration = hostContext.Configuration;
-        var fila = configuration.GetSection("MassTransit")["NomeFila"] ?? string.Empty;
+        var filaCadastro = configuration.GetSection("MassTransit")["NomeFilaCadastro"] ?? string.Empty;
+        var filaAtualizacao = configuration.GetSection("MassTransit")["NomeFilaAtualizacao"] ?? string.Empty;
         var servidor = configuration.GetSection("MassTransit")["Servidor"] ?? string.Empty;
         var usuario = configuration.GetSection("MassTransit")["Usuario"] ?? string.Empty;
         var senha = configuration.GetSection("MassTransit")["Senha"] ?? string.Empty;
@@ -21,15 +22,20 @@ IHost host = Host.CreateDefaultBuilder(args)
                     h.Username(usuario);
                     h.Password(senha);
                 });
-                cfg.ReceiveEndpoint(fila, e =>
+                cfg.ReceiveEndpoint(filaCadastro, e =>
                 {
                     e.Consumer<ContatoCriadoConsumidor>(context);
+                });
+                cfg.ReceiveEndpoint(filaAtualizacao, e =>
+                {
+                    e.Consumer<ContatoAtualizadoConsumidor>(context);
                 });
 
                 cfg.ConfigureEndpoints(context);
             });
 
             x.AddConsumer<ContatoCriadoConsumidor>();
+            x.AddConsumer<ContatoAtualizadoConsumidor>();
         });
     })
     .Build();

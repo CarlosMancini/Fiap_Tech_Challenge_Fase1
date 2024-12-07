@@ -3,34 +3,35 @@ using Core.Inputs;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Cadastro.Controllers
+namespace Atualizacao.Controllers
 {
     [ApiController]
-    [Route("/Cadastro")]
-    public class CadastroController : ControllerBase
+    [Route("/Atualizacao")]
+    public class AtualizacaoController : ControllerBase
     {
         private readonly IBus _bus;
         private readonly IConfiguration _configuration;
 
-        public CadastroController(IBus bus, IConfiguration configuration)
+        public AtualizacaoController(IBus bus, IConfiguration configuration)
         {
             _bus = bus;
             _configuration = configuration;
         }
 
         [HttpPost]
-        public async Task<IActionResult> CadastrarContato([FromBody] ContatoInputCadastrar input)
+        public async Task<IActionResult> AtualizarContato([FromBody] ContatoInputAtualizar input)
         {
             try
             {
                 var nomeFila = _configuration.GetSection("MassTransit")["NomeFila"] ?? string.Empty;
                 var endpoint = await _bus.GetSendEndpoint(new Uri($"queue:{nomeFila}"));
 
-                var contato = new Contato
+                var contato = new Contato()
                 {
+                    Id = input.Id,
                     ContatoNome = input.ContatoNome,
-                    ContatoEmail = input.ContatoEmail,
-                    ContatoTelefone = input.ContatoTelefone
+                    ContatoTelefone = input.ContatoTelefone,
+                    ContatoEmail = input.ContatoEmail
                 };
 
                 await endpoint.Send(contato);

@@ -70,7 +70,7 @@ namespace Fiap_Tech_Challenge_Fase1.Tests.UnitTests.Services
         }
 
         [Fact]
-        public async Task Alterar_DeveLancarException_QuandoContatoJaExiste()
+        public async Task Atualizar_DeveLancarException_QuandoContatoJaExiste()
         {
             // Arrange
             var contato = new Contato
@@ -92,11 +92,11 @@ namespace Fiap_Tech_Challenge_Fase1.Tests.UnitTests.Services
             await _context.SaveChangesAsync();
 
             // Act & Assert
-            await Assert.ThrowsAsync<Exception>(() => _contatoService.Alterar(contato));
+            await Assert.ThrowsAsync<Exception>(() => _contatoService.Atualizar(contato));
         }
 
         [Fact]
-        public async Task Alterar_DeveChamarRepository_QuandoContatoEhValido()
+        public async Task Atualizar_DeveChamarRepository_QuandoContatoEhValido()
         {
             // Arrange
             var contato = new Contato
@@ -116,7 +116,7 @@ namespace Fiap_Tech_Challenge_Fase1.Tests.UnitTests.Services
             contato.ContatoTelefone = "1132336598";
 
             // Act
-            await _contatoService.Alterar(contato);
+            await _contatoService.Atualizar(contato);
 
             // Assert
             var contatoAlterado = await _context.Contatos.FindAsync(contato.Id);

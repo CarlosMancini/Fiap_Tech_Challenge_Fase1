@@ -15,7 +15,7 @@ namespace Infrastructure.Database.Repository
             _dbSet = _context.Set<T>();
         }
 
-        public async Task Alterar(T entidade)
+        public async Task Atualizar(T entidade)
         {
             var entidadeOriginal = await ObterPorId(entidade.Id);
             if (entidadeOriginal is null) throw new Exception("Contato não existe");
@@ -32,7 +32,7 @@ namespace Infrastructure.Database.Repository
             await _context.SaveChangesAsync();
         }
 
-        public async Task Deletar(int id)
+        public async Task Excluir(int id)
         {
             var entidade = await ObterPorId(id);
             if (entidade is not null)

@@ -65,7 +65,7 @@ namespace Fiap_Tech_Challenge_Fase1.Services
             await base.Cadastrar(entidade);
         }
 
-        public async Task Alterar(Contato entidade)
+        public async Task Atualizar(Contato entidade)
         {
             int region = Int32.Parse(entidade.ContatoTelefone[..2]);
             var allRegions = await _regiaoRepository.ObterTodos() ?? new List<Regiao>();
@@ -98,7 +98,7 @@ namespace Fiap_Tech_Challenge_Fase1.Services
                 throw new Exception("Ja existe um contato com o mesmo nome e telefone.");
             }
 
-            await base.Alterar(entidade);
+            await base.Atualizar(entidade);
         }
 
         public IList<Contato> ObterPorRegiao(int regiaoId)

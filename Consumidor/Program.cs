@@ -3,6 +3,7 @@ using Consumidor.Eventos;
 using Core.Interfaces.Services;
 using Cadastro.Services;
 using Atualizacao.Services;
+using Exclusao.Services;
 using MassTransit;
 using Core.Gateways;
 using Core.Interfaces.Repository;
@@ -16,12 +17,14 @@ IHost host = Host.CreateDefaultBuilder(args)
         var configuration = hostContext.Configuration;
         var filaCadastro = configuration.GetSection("MassTransit")["NomeFilaCadastro"] ?? string.Empty;
         var filaAtualizacao = configuration.GetSection("MassTransit")["NomeFilaAtualizacao"] ?? string.Empty;
+        var filaExclusao = configuration.GetSection("MassTransit")["NomeFilaExclusao"] ?? string.Empty;
         var servidor = configuration.GetSection("MassTransit")["Servidor"] ?? string.Empty;
         var usuario = configuration.GetSection("MassTransit")["Usuario"] ?? string.Empty;
         var senha = configuration.GetSection("MassTransit")["Senha"] ?? string.Empty;
 
         services.AddScoped<ICadastroService, CadastroService>();
         services.AddScoped<IAtualizacaoService, AtualizacaoService>();
+        services.AddScoped<IExclusaoService, ExclusaoService>();
         services.AddScoped<IContatoRepository, ContatoRepository>();
         services.AddScoped<IRegiaoRepository, RegiaoRepository>();
         services.AddScoped<IBrasilGateway, BrasilGateway>();
@@ -50,6 +53,11 @@ IHost host = Host.CreateDefaultBuilder(args)
                 });
 
                 cfg.ReceiveEndpoint(filaAtualizacao, e =>
+                {
+                    e.Consumer<ContatoAtualizadoConsumidor>(context);
+                });
+
+                cfg.ReceiveEndpoint(filaExclusao, e =>
                 {
                     e.Consumer<ContatoAtualizadoConsumidor>(context);
                 });

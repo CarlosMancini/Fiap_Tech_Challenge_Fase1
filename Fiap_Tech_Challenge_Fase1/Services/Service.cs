@@ -13,13 +13,13 @@ namespace Fiap_Tech_Challenge_Fase1.Services
             _repository = repository;
         }
 
-        public async Task Alterar(T entidade)
+        public async Task Atualizar(T entidade)
         {
             if (entidade.Id == 0)
             {
                 throw new Exception("Sem id enviado");
             }
-            await _repository.Alterar(entidade);
+            await _repository.Atualizar(entidade);
         }
 
         public async Task Cadastrar(T entidade)
@@ -27,9 +27,9 @@ namespace Fiap_Tech_Challenge_Fase1.Services
             await _repository.Cadastrar(entidade);
         }
 
-        public async Task Deletar(int id)
+        public async Task Excluir(int id)
         {
-            await _repository.Deletar(id);
+            await _repository.Excluir(id);
         }
 
         public async Task<T> ObterPorId(int id)

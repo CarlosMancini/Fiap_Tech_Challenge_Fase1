@@ -52,7 +52,7 @@ namespace Atualizacao.Services
                 throw new Exception("Ja existe um contato com o mesmo nome e telefone.");
             }
 
-            await _contatoRepository.Alterar(entidade);
+            await _contatoRepository.Atualizar(entidade);
         }
     }
 }

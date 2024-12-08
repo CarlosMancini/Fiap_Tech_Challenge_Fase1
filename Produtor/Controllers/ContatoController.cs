@@ -1,7 +1,7 @@
 ﻿using Core.Entities;
-using Core.Inputs;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
+using Produtor.Mensagens;
 
 namespace Cadastro.Controllers
 {
@@ -19,7 +19,7 @@ namespace Cadastro.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CadastrarContato([FromBody] ContatoInputCadastrar input)
+        public async Task<IActionResult> CadastrarContato([FromBody] ContatoCriadoMensagem input)
         {
             try
             {
@@ -43,7 +43,7 @@ namespace Cadastro.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> AtualizarContato([FromBody] ContatoInputAtualizar input)
+        public async Task<IActionResult> AtualizarContato([FromBody] ContatoAtualizadoMensagem input)
         {
             try
             {
@@ -64,6 +64,23 @@ namespace Cadastro.Controllers
             catch (Exception e)
             {
                 return BadRequest(e.Message);
+            }
+        }
+
+        [HttpDelete("{Id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                var nomeFila = _configuration.GetSection("MassTransit")["NomeFilaExclusao"] ?? string.Empty;
+                var endpoint = await _bus.GetSendEndpoint(new Uri($"queue:{nomeFila}"));
+
+                await endpoint.Send(new ContatoExcluidoMensagem { Id = id });
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
             }
         }
     }

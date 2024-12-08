@@ -38,7 +38,7 @@ namespace Fiap_Tech_Challenge_Fase1.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Alterar([FromBody] ContatoInputAtualizar input)
+        public async Task<IActionResult> Atualizar([FromBody] ContatoInputAtualizar input)
         {
             try
             {
@@ -50,7 +50,7 @@ namespace Fiap_Tech_Challenge_Fase1.Controllers
                     ContatoEmail = input.ContatoEmail
                 };
 
-                await _contatoService.Alterar(contato);
+                await _contatoService.Atualizar(contato);
                 return Ok();
             }
             catch (Exception e)
@@ -92,7 +92,7 @@ namespace Fiap_Tech_Challenge_Fase1.Controllers
         {
             try
             {
-                await _contatoService.Deletar(Id);
+                await _contatoService.Excluir(Id);
                 return Ok();
             }
             catch (Exception e)

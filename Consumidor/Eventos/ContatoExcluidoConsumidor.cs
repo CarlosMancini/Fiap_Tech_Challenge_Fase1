@@ -1,6 +1,6 @@
 ﻿using Core.Interfaces.Services;
+using Core.Mensagens;
 using MassTransit;
-using Produtor.Mensagens;
 
 namespace Consumidor.Eventos
 {
@@ -17,8 +17,8 @@ namespace Consumidor.Eventos
         {
             try
             {
-                var contatoId = context.Message;
-                await _exclusaoService.Excluir(contatoId.Id);
+                var contatoId = context.Message.Id;
+                await _exclusaoService.Excluir(contatoId);
                 Console.WriteLine($"Contato com ID {contatoId} excluído com sucesso.");
             }
             catch (Exception ex)

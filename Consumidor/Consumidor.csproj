@@ -13,7 +13,6 @@
     <ProjectReference Include="..\Core\Core.csproj" />
     <ProjectReference Include="..\Exclusao\Exclusao.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
-    <ProjectReference Include="..\Produtor\Produtor.csproj" />
   </ItemGroup>
 
   <ItemGroup>

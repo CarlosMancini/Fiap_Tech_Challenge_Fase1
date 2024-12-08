@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Produtor.Mensagens
+namespace Core.Mensagens
 {
     public class ContatoCriadoMensagem
     {

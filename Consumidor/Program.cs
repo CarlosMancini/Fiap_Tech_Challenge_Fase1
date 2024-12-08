@@ -38,6 +38,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         {
             x.AddConsumer<ContatoCriadoConsumidor>();
             x.AddConsumer<ContatoAtualizadoConsumidor>();
+            x.AddConsumer<ContatoExcluidoConsumidor>();
 
             x.UsingRabbitMq((context, cfg) =>
             {
@@ -59,7 +60,7 @@ IHost host = Host.CreateDefaultBuilder(args)
 
                 cfg.ReceiveEndpoint(filaExclusao, e =>
                 {
-                    e.Consumer<ContatoAtualizadoConsumidor>(context);
+                    e.Consumer<ContatoExcluidoConsumidor>(context);
                 });
             });
         });

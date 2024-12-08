@@ -1,7 +1,6 @@
-﻿using Core.Entities;
+﻿using Core.Mensagens;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
-using Produtor.Mensagens;
 
 namespace Cadastro.Controllers
 {
@@ -26,14 +25,7 @@ namespace Cadastro.Controllers
                 var nomeFila = _configuration.GetSection("MassTransit")["NomeFilaCadastro"] ?? string.Empty;
                 var endpoint = await _bus.GetSendEndpoint(new Uri($"queue:{nomeFila}"));
 
-                var contato = new Contato
-                {
-                    ContatoNome = input.ContatoNome,
-                    ContatoEmail = input.ContatoEmail,
-                    ContatoTelefone = input.ContatoTelefone
-                };
-
-                await endpoint.Send(contato);
+                await endpoint.Send(input);
                 return Ok("Contato enviado para a fila.");
             }
             catch (Exception e)
@@ -50,15 +42,7 @@ namespace Cadastro.Controllers
                 var nomeFila = _configuration.GetSection("MassTransit")["NomeFilaAtualizacao"] ?? string.Empty;
                 var endpoint = await _bus.GetSendEndpoint(new Uri($"queue:{nomeFila}"));
 
-                var contato = new Contato()
-                {
-                    Id = input.Id,
-                    ContatoNome = input.ContatoNome,
-                    ContatoTelefone = input.ContatoTelefone,
-                    ContatoEmail = input.ContatoEmail
-                };
-
-                await endpoint.Send(contato);
+                await endpoint.Send(input);
                 return Ok("Contato enviado para a fila.");
             }
             catch (Exception e)
@@ -67,15 +51,15 @@ namespace Cadastro.Controllers
             }
         }
 
-        [HttpDelete("{Id}")]
-        public async Task<IActionResult> Delete(int id)
+        [HttpDelete]
+        public async Task<IActionResult> Delete(ContatoExcluidoMensagem input)
         {
             try
             {
                 var nomeFila = _configuration.GetSection("MassTransit")["NomeFilaExclusao"] ?? string.Empty;
                 var endpoint = await _bus.GetSendEndpoint(new Uri($"queue:{nomeFila}"));
 
-                await endpoint.Send(new ContatoExcluidoMensagem { Id = id });
+                await endpoint.Send(input);
                 return Ok();
             }
             catch (Exception e)

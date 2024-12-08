@@ -1,7 +1,7 @@
 ﻿using Core.Entities;
 using Core.Interfaces.Services;
+using Core.Mensagens;
 using MassTransit;
-using Produtor.Mensagens;
 
 namespace Consumidor.Eventos
 {
@@ -18,7 +18,7 @@ namespace Consumidor.Eventos
         {
             try
             {
-                Contato contato = new Contato()
+                Contato contato = new Contato
                 {
                     Id = context.Message.Id,
                     ContatoNome = context.Message.ContatoNome,

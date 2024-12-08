@@ -2,6 +2,7 @@ using Consumidor;
 using Consumidor.Eventos;
 using Core.Interfaces.Services;
 using Cadastro.Services;
+using Atualizacao.Services;
 using MassTransit;
 using Core.Gateways;
 using Core.Interfaces.Repository;
@@ -20,6 +21,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         var senha = configuration.GetSection("MassTransit")["Senha"] ?? string.Empty;
 
         services.AddScoped<ICadastroService, CadastroService>();
+        services.AddScoped<IAtualizacaoService, AtualizacaoService>();
         services.AddScoped<IContatoRepository, ContatoRepository>();
         services.AddScoped<IRegiaoRepository, RegiaoRepository>();
         services.AddScoped<IBrasilGateway, BrasilGateway>();

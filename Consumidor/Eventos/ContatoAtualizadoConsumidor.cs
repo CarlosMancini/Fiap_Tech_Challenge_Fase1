@@ -1,14 +1,30 @@
 ﻿using Core.Entities;
+using Core.Interfaces.Services;
 using MassTransit;
 
 namespace Consumidor.Eventos
 {
     public class ContatoAtualizadoConsumidor : IConsumer<Contato>
     {
-        public Task Consume(ConsumeContext<Contato> context)
+        private readonly IAtualizacaoService _atualizacaoService;
+
+        public ContatoAtualizadoConsumidor(IAtualizacaoService atualizacaoService)
         {
-            Console.WriteLine(context.Message);
-            return Task.CompletedTask;
+            _atualizacaoService = atualizacaoService;
+        }
+
+        public async Task Consume(ConsumeContext<Contato> context)
+        {
+            try
+            {
+                var contato = context.Message;
+                await _atualizacaoService.Atualizar(contato);
+                Console.WriteLine($"Contato {contato.ContatoNome} atualizado com sucesso.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Erro ao cadastrar contato: {ex.Message}");
+            }
         }
     }
 }

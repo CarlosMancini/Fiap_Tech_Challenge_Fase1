@@ -1,4 +1,4 @@
-using Fiap_Tech_Challenge_Fase1.Extensions;
+using ConsultaContato.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Prometheus;
 

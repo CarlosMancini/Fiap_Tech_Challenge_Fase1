@@ -1,6 +1,7 @@
+using Atualizacao.Services;
+using Cadastro.Services;
 using Core.Entities;
 using Core.Interfaces.Services;
-using Fiap_Tech_Challenge_Fase1.Services;
 using Infrastructure.Database.Repository;
 using Infrastructure.Gateways.Brasil;
 using Microsoft.EntityFrameworkCore;
@@ -9,8 +10,10 @@ namespace Fiap_Tech_Challenge_Fase1.Tests.UnitTests.Services
 {
     public class ContatoServiceTests : IDisposable
     {
-        private readonly IContatoService _contatoService;
         private readonly ApplicationDbContext _context;
+        private readonly ICadastroService _cadastroService;
+        private readonly IAtualizacaoService _atualizacaoService;
+
 
         public ContatoServiceTests()
         {
@@ -23,7 +26,8 @@ namespace Fiap_Tech_Challenge_Fase1.Tests.UnitTests.Services
             var regiaoRepository = new RegiaoRepository(_context);
             var brasilGateway = new BrasilGateway();
 
-            _contatoService = new ContatoService(contatoRepository, regiaoRepository, brasilGateway);
+            _cadastroService = new CadastroService(contatoRepository, regiaoRepository, brasilGateway);
+            _atualizacaoService = new AtualizacaoService(contatoRepository, regiaoRepository, brasilGateway);
         }
 
         [Fact]
@@ -37,7 +41,7 @@ namespace Fiap_Tech_Challenge_Fase1.Tests.UnitTests.Services
                 ContatoEmail = "bruce.wayne@wayneltda.com.br"
             };
 
-            await _contatoService.Cadastrar(contatoExistente);
+            await _cadastroService.Cadastrar(contatoExistente);
 
             var novoContato = new Contato
             {
@@ -47,8 +51,8 @@ namespace Fiap_Tech_Challenge_Fase1.Tests.UnitTests.Services
             };
 
             // Act & Assert
-            var exception = await Assert.ThrowsAsync<Exception>(() => _contatoService.Cadastrar(novoContato));
-            Assert.Equal("Ja existe um contato com o mesmo nome e telefone.", exception.Message);
+            var exception = await Assert.ThrowsAsync<Exception>(() => _cadastroService.Cadastrar(novoContato));
+            Assert.Equal("Já existe um contato com o mesmo nome e telefone.", exception.Message);
         }
 
         [Fact]
@@ -63,7 +67,7 @@ namespace Fiap_Tech_Challenge_Fase1.Tests.UnitTests.Services
             };
 
             // Act
-            await _contatoService.Cadastrar(contato);
+            await _cadastroService.Cadastrar(contato);
 
             // Assert
             Assert.Contains(_context.Contatos, c => c.ContatoNome == contato.ContatoNome);
@@ -92,7 +96,7 @@ namespace Fiap_Tech_Challenge_Fase1.Tests.UnitTests.Services
             await _context.SaveChangesAsync();
 
             // Act & Assert
-            await Assert.ThrowsAsync<Exception>(() => _contatoService.Atualizar(contato));
+            await Assert.ThrowsAsync<Exception>(() => _atualizacaoService.Atualizar(contato));
         }
 
         [Fact]
@@ -116,7 +120,7 @@ namespace Fiap_Tech_Challenge_Fase1.Tests.UnitTests.Services
             contato.ContatoTelefone = "1132336598";
 
             // Act
-            await _contatoService.Atualizar(contato);
+            await _atualizacaoService.Atualizar(contato);
 
             // Assert
             var contatoAlterado = await _context.Contatos.FindAsync(contato.Id);

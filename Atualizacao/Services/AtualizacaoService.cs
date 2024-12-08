@@ -49,7 +49,7 @@ namespace Atualizacao.Services
             var contatoExistente = await _contatoRepository.ObterPorNomeETelefone(entidade.ContatoNome, entidade.ContatoTelefone);
             if (contatoExistente != null)
             {
-                throw new Exception("Ja existe um contato com o mesmo nome e telefone.");
+                throw new Exception("Já existe um contato com o mesmo nome e telefone.");
             }
 
             await _contatoRepository.Atualizar(entidade);

@@ -6,8 +6,5 @@ namespace Core.Interfaces.Services
     {
         Task<IList<T>> ObterTodos();
         Task<T> ObterPorId(int id);
-        Task Cadastrar(T entidade);
-        Task Atualizar(T entidade);
-        Task Excluir(int id);
     }
 }

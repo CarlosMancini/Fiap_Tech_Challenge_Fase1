@@ -1,0 +1,31 @@
+name: Build and Test - Exclusão
+
+on:
+  push:
+    paths:
+      - 'Exclusao/**'             
+      - 'ExclusaoProdutor/**'     
+      - 'ExclusaoConsumidor/**'   
+  pull_request:
+    paths:
+      - 'Exclusao/**'             
+      - 'ExclusaoProdutor/**'     
+      - 'ExclusaoConsumidor/**'   
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Restore dependencies
+        run: dotnet restore Exclusao/Exclusao.csproj
+      - name: Build Exclusão
+        run: dotnet build Exclusao/Exclusao.csproj --no-restore
+      - name: Test Exclusão
+        run: dotnet test Exclusao/Exclusao.csproj --no-build --verbosity normal

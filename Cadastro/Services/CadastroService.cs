@@ -24,7 +24,7 @@ namespace Cadastro.Services
             var contatoExistente = await _contatoRepository.ObterPorNomeETelefone(entidade.ContatoNome, entidade.ContatoTelefone);
             if (contatoExistente != null)
             {
-                throw new Exception("Já existe um contato com o mesmo nome e telefone.");
+                throw new Exception("Ja existe um contato com o mesmo nome e telefone.");
             }
 
             int region = Int32.Parse(entidade.ContatoTelefone[..2]); // Considerando que os dois primeiros números são o DDD

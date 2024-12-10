@@ -52,7 +52,7 @@ namespace Fiap_Tech_Challenge_Fase1.Tests.UnitTests.Services
 
             // Act & Assert
             var exception = await Assert.ThrowsAsync<Exception>(() => _cadastroService.Cadastrar(novoContato));
-            Assert.Equal("Já existe um contato com o mesmo nome e telefone.", exception.Message);
+            Assert.Equal("Ja existe um contato com o mesmo nome e telefone.", exception.Message);
         }
 
         [Fact]

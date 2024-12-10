@@ -34,19 +34,4 @@ public class IntegrationTestBase : IClassFixture<WebApplicationFactory<Program>>
             });
         }).CreateClient();
     }
-
-    public void SeedData(ApplicationDbContext dbContext)
-    {
-        var contatoExistente = new Contato
-        {
-            ContatoNome = "Teste Contato",
-            ContatoEmail = "existente@contato.com",
-            ContatoTelefone = "123456789",
-            RegiaoId = 1,
-            DataCriacao = DateTime.Now
-        };
-
-        dbContext.Contatos.Add(contatoExistente);
-        dbContext.SaveChanges();
-    }
 }

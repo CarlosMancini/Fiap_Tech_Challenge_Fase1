@@ -1,12 +1,12 @@
-﻿using Core.Gateways;
+﻿using ConsultaContato.Services;
+using Core.Gateways;
 using Core.Interfaces.Repository;
 using Core.Interfaces.Services;
-using Fiap_Tech_Challenge_Fase1.Services;
 using Infrastructure.Database.Repository;
 using Infrastructure.Gateways.Brasil;
 using Microsoft.EntityFrameworkCore;
 
-namespace Fiap_Tech_Challenge_Fase1.Extensions
+namespace ConsultaContato.Extensions
 {
     public static class DependencyInjection
     {

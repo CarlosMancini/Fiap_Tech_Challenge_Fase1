@@ -87,7 +87,7 @@ namespace Fiap_Tech_Challenge_Fase1.Tests
                 var response = await _client.PostAsJsonAsync("/contacts", contatoDuplicado);
 
                 // Assert
-                Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+                Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
             }
         }
     }

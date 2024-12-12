@@ -1,13 +1,37 @@
 ﻿global:
-  scrape_interval: 5s
+  scrape_interval: 15s
 
 scrape_configs:
-  - job_name: 'app'
-    scrape_interval: 5s
-    static_configs:
-      - targets: ['host.docker.internal:5207'] 
+  # - job_name: 'atualizacao_produtor'
+  #   metrics_path: /metrics
+  #   static_configs:
+  #     - targets: ['atualizacao_produtor:80']
 
-  - job_name: 'prometheus'
-    scrape_interval: 5s
+  # - job_name: 'atualizacao_consumidor'
+  #   metrics_path: /metrics
+  #   static_configs:
+  #     - targets: ['atualizacao_consumidor:80']
+
+  - job_name: 'cadastro_produtor'
+    metrics_path: /metrics
     static_configs:
-      - targets: ['localhost:9090']
+      - targets: ['host.docker.internal:5224']
+
+  - job_name: 'cadastro_consumidor'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['cadastro_consumidor:80']
+
+  - job_name: 'rabbitmq'
+    static_configs:
+      - targets: ['host.docker.internal:9419']
+
+  # - job_name: 'exclusao_produtor'
+  #   metrics_path: /metrics
+  #   static_configs:
+  #     - targets: ['exclusao_produtor:80']
+
+  # - job_name: 'exclusao_consumidor'
+  #   metrics_path: /metrics
+  #   static_configs:
+  #     - targets: ['exclusao_consumidor:80']

@@ -1,42 +1,26 @@
-﻿services:
-  app:
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-    ports:
-      - "8080:80"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-    depends_on:
-      - prometheus
-      - grafana
-    networks:
-      - monitoring
+version: '3.8'
 
+services:
+  # Prometheus
   prometheus:
     image: prom/prometheus:latest
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    container_name: prometheus
     ports:
       - "9090:9090"
-    command:
-      - "--config.file=/etc/prometheus/prometheus.yml"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
     networks:
-      - monitoring
+      - app_network
 
+  # Grafana
   grafana:
     image: grafana/grafana:latest
+    container_name: grafana
     ports:
       - "3000:3000"
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-    volumes:
-      - grafana-data:/var/lib/grafana
     networks:
-      - monitoring
-
-volumes:
-  grafana-data:
+      - app_network
 
 networks:
-  monitoring:
+  app_network:
+    driver: bridge

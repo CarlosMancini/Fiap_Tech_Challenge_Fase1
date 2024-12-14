@@ -1,12 +1,10 @@
 name: Build and Test - Atualização
 
 on:
-  push:
-    paths:
-      - 'Atualizacao/**'
-      - 'AtualizacaoProdutor/**'
-      - 'AtualizacaoConsumidor/**'
   pull_request:
+    branches:
+      - develop
+      - master 
     paths:
       - 'Atualizacao/**'
       - 'AtualizacaoProdutor/**'

@@ -1,12 +1,10 @@
 name: Build and Test - Exclusão
 
 on:
-  push:
-    paths:
-      - 'Exclusao/**'             
-      - 'ExclusaoProdutor/**'     
-      - 'ExclusaoConsumidor/**'   
   pull_request:
+    branches:
+      - develop
+      - master 
     paths:
       - 'Exclusao/**'             
       - 'ExclusaoProdutor/**'     

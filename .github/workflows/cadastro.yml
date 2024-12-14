@@ -1,12 +1,10 @@
 name: Build and Test - Cadastro
 
 on:
-  push:
-    paths:
-      - 'Cadastro/**'             
-      - 'CadastroProdutor/**'     
-      - 'CadastroConsumidor/**'   
   pull_request:
+    branches:
+      - develop
+      - master 
     paths:
       - 'Cadastro/**'             
       - 'CadastroProdutor/**'     

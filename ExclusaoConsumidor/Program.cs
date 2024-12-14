@@ -1,3 +1,4 @@
+using Core.Interfaces.Repository;
 using Core.Interfaces.Services;
 using Exclusao.Services;
 using ExclusaoConsumidor;
@@ -16,6 +17,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         var senha = configuration.GetSection("MassTransit")["Senha"] ?? string.Empty;
 
         services.AddScoped<IExclusaoService, ExclusaoService>();
+        services.AddScoped<IContatoRepository, ContatoRepository>();
 
         services.AddDbContext<ApplicationDbContext>(options =>
         {

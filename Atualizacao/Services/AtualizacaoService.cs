@@ -21,6 +21,8 @@ namespace Atualizacao.Services
 
         public async Task Atualizar(Contato entidade)
         {
+            // TESTE PIPELINE
+
             int region = Int32.Parse(entidade.ContatoTelefone[..2]);
             var allRegions = await _regiaoRepository.ObterTodos() ?? new List<Regiao>();
             var selectedRegion = allRegions.FirstOrDefault(item => item.RegiaoDdd == region);

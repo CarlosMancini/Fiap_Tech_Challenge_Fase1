@@ -19,14 +19,14 @@ services:
     networks:
       - app_network
     depends_on:
-      - prometheus  # Garantir que o Prometheus esteja disponvel antes do Grafana
+      - prometheus
 
   rabbitmq:
     image: rabbitmq:management
     container_name: rabbitmq
     ports:
-      - "5672:5672"     # Porta para comunicao MassTransit
-      - "15672:15672"   # Porta do painel de administrao RabbitMQ
+      - "5672:5672"
+      - "15672:15672"
     networks:
       - app_network
     environment:
@@ -42,11 +42,11 @@ services:
       - app_network
     environment:
       RABBIT_URL: http://host.docker.internal:15672
-      RABBITMQ_EXPORT_QUEUES: "true"  # Para monitorar filas especficas
+      RABBITMQ_EXPORT_QUEUES: "true"
       RABBITMQ_USER: guest
       RABBITMQ_PASS: guest
     depends_on:
-      - rabbitmq  # Espera o RabbitMQ iniciar antes
+      - rabbitmq
 
 networks:
   app_network:

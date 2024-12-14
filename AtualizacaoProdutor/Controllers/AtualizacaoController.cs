@@ -22,7 +22,7 @@ namespace AtualizacaoProdutor.Controllers
         {
             try
             {
-                var nomeFila = _configuration.GetSection("MassTransit")["NomeFilaAtualizacao"] ?? string.Empty;
+                var nomeFila = _configuration.GetSection("MassTransit")["NomeFila"] ?? string.Empty;
                 var endpoint = await _bus.GetSendEndpoint(new Uri($"queue:{nomeFila}"));
 
                 await endpoint.Send(input);

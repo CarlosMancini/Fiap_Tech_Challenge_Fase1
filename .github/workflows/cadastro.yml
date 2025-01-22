@@ -1,0 +1,29 @@
+name: Build and Test - Cadastro
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - master 
+    paths:
+      - 'Cadastro/**'             
+      - 'CadastroProdutor/**'     
+      - 'CadastroConsumidor/**'   
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Restore dependencies
+        run: dotnet restore Cadastro/Cadastro.csproj
+      - name: Build Cadastro
+        run: dotnet build Cadastro/Cadastro.csproj --no-restore
+      - name: Test Cadastro
+        run: dotnet test Cadastro/Cadastro.csproj --no-build --verbosity normal

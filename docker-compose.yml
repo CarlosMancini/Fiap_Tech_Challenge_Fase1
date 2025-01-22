@@ -1,42 +1,53 @@
-﻿services:
-  app:
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-    ports:
-      - "8080:80"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-    depends_on:
-      - prometheus
-      - grafana
-    networks:
-      - monitoring
+version: '3.8'
 
+services:
   prometheus:
     image: prom/prometheus:latest
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    container_name: prometheus
     ports:
       - "9090:9090"
-    command:
-      - "--config.file=/etc/prometheus/prometheus.yml"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
     networks:
-      - monitoring
+      - app_network
 
   grafana:
     image: grafana/grafana:latest
+    container_name: grafana
     ports:
       - "3000:3000"
-    environment:
-      - GF_SECURITY_ADMIN_PASSWORD=admin
-    volumes:
-      - grafana-data:/var/lib/grafana
     networks:
-      - monitoring
+      - app_network
+    depends_on:
+      - prometheus
 
-volumes:
-  grafana-data:
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - app_network
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  rabbitmq-exporter:
+    image: kbudde/rabbitmq-exporter:latest
+    container_name: rabbitmq-exporter
+    ports:
+      - "9419:9419"
+    networks:
+      - app_network
+    environment:
+      RABBIT_URL: http://host.docker.internal:15672
+      RABBITMQ_EXPORT_QUEUES: "true"
+      RABBITMQ_USER: guest
+      RABBITMQ_PASS: guest
+    depends_on:
+      - rabbitmq
 
 networks:
-  monitoring:
+  app_network:
+    driver: bridge

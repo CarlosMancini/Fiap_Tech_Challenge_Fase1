@@ -1,9 +1,7 @@
-﻿using Core.Entities;
-using Core.Inputs;
-using Core.Interfaces.Services;
+﻿using Core.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Fiap_Tech_Challenge_Fase1.Controllers
+namespace ConsultaContato.Controllers
 {
     [ApiController]
     [Route("contacts")]
@@ -14,49 +12,6 @@ namespace Fiap_Tech_Challenge_Fase1.Controllers
         public ContatoController(IContatoService contatoService)
         {
             _contatoService = contatoService;
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Cadastrar([FromBody] ContatoInputCadastrar input)
-        {
-            try
-            {
-                var contato = new Contato()
-                {
-                    ContatoNome = input.ContatoNome,
-                    ContatoTelefone = input.ContatoTelefone,
-                    ContatoEmail = input.ContatoEmail
-                };
-
-                await _contatoService.Cadastrar(contato);
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-
-        [HttpPut]
-        public async Task<IActionResult> Alterar([FromBody] ContatoInputAtualizar input)
-        {
-            try
-            {
-                var contato = new Contato()
-                {
-                    Id = input.Id,
-                    ContatoNome = input.ContatoNome,
-                    ContatoTelefone = input.ContatoTelefone,
-                    ContatoEmail = input.ContatoEmail
-                };
-
-                await _contatoService.Alterar(contato);
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e);
-            }
         }
 
         [HttpGet("obter-todos")]
@@ -80,20 +35,6 @@ namespace Fiap_Tech_Challenge_Fase1.Controllers
             {
                 var result = await _contatoService.ObterPorId(Id);
                 return result != null ? Ok(result) : NotFound(); // Retorna NotFound se não existir
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e);
-            }
-        }
-
-        [HttpDelete("{Id}")]
-        public async Task<IActionResult> Delete(int Id)
-        {
-            try
-            {
-                await _contatoService.Deletar(Id);
-                return Ok();
             }
             catch (Exception e)
             {

@@ -6,9 +6,9 @@ on:
       - develop
       - master 
     paths:
-      - 'Atualizacao/**'
-      - 'AtualizacaoProdutor/**'
-      - 'AtualizacaoConsumidor/**'
+      - 'src/Microservicos/Atualizacao/**'
+      - 'src/RabbitMq/Produtores/AtualizacaoProdutor/**'
+      - 'src/RabbitMq/Consumidores/AtualizacaoConsumidor/**'
 
 jobs:
   build:
@@ -22,8 +22,8 @@ jobs:
         with:
           dotnet-version: 8.0.x
       - name: Restore dependencies
-        run: dotnet restore Atualizacao/Atualizacao.csproj
+        run: dotnet restore src/Microservicos/Atualizacao/Atualizacao.csproj
       - name: Build Atualização
-        run: dotnet build Atualizacao/Atualizacao.csproj --no-restore
+        run: dotnet build src/Microservicos/Atualizacao/Atualizacao.csproj --no-restore
       - name: Test Atualização
-        run: dotnet test Atualizacao/Atualizacao.csproj --no-build --verbosity normal
+        run: dotnet test src/Microservicos/Atualizacao/Atualizacao.csproj --no-build --verbosity normal

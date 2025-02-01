@@ -22,11 +22,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Atualizacao\Atualizacao.csproj" />
-		<ProjectReference Include="..\Cadastro\Cadastro.csproj" />
-		<ProjectReference Include="..\Core\Core.csproj" />
-		<ProjectReference Include="..\Fiap_Tech_Challenge_Fase1\ConsultaContato.csproj" />
-		<ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+		<ProjectReference Include="..\src\ConsultaContato\ConsultaContato.csproj" />
+		<ProjectReference Include="..\src\Core\Core.csproj" />
+		<ProjectReference Include="..\src\Infrastructure\Infrastructure.csproj" />
+		<ProjectReference Include="..\src\Microservicos\Atualizacao\Atualizacao.csproj" />
+		<ProjectReference Include="..\src\Microservicos\Cadastro\Cadastro.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

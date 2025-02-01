@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35027.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsultaContato", "Fiap_Tech_Challenge_Fase1\ConsultaContato.csproj", "{0C11E35F-FB61-4F33-96EF-E5085C9968A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsultaContato", "src\ConsultaContato\ConsultaContato.csproj", "{0C11E35F-FB61-4F33-96EF-E5085C9968A9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{E714E85D-99FC-437A-9185-19A4FE2613BC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "src\Core\Core.csproj", "{E714E85D-99FC-437A-9185-19A4FE2613BC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{C87EC1F8-42B6-4316-99A8-F73A5BF4A22C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "src\Infrastructure\Infrastructure.csproj", "{C87EC1F8-42B6-4316-99A8-F73A5BF4A22C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{490A1903-AAF6-4A6A-BFA1-8EA86E35FD32}"
 EndProject
@@ -15,31 +15,31 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E3DEB49B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fiap_Tech_Challenge_Fase1.Tests", "Fiap_Tech_Challenge_Fase1.Tests\Fiap_Tech_Challenge_Fase1.Tests.csproj", "{7206F4D0-2446-4E80-BAEC-246EF6504518}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RabbitMq", "RabbitMq", "{C6C03787-F5F3-4A6E-B16C-779E82F5FC0E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RabbitMq", "src\RabbitMq", "{C6C03787-F5F3-4A6E-B16C-779E82F5FC0E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Microservicos", "Microservicos", "{DEA9A995-0E83-434D-B985-32CB85736EE7}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Microservicos", "src\Microservicos", "{DEA9A995-0E83-434D-B985-32CB85736EE7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cadastro", "Cadastro\Cadastro.csproj", "{DDE70713-239B-4E58-907A-3E9E9B698332}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cadastro", "src\Microservicos\Cadastro\Cadastro.csproj", "{DDE70713-239B-4E58-907A-3E9E9B698332}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Atualizacao", "Atualizacao\Atualizacao.csproj", "{88856B46-E5C5-43D8-9360-F1EA43517ED2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Atualizacao", "src\Microservicos\Atualizacao\Atualizacao.csproj", "{88856B46-E5C5-43D8-9360-F1EA43517ED2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Exclusao", "Exclusao\Exclusao.csproj", "{803BDAFA-9DA6-49C2-B905-0B9A1A18BF10}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Exclusao", "src\Microservicos\Exclusao\Exclusao.csproj", "{803BDAFA-9DA6-49C2-B905-0B9A1A18BF10}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Produtores", "Produtores", "{E54BC783-D410-4AB2-9F27-4093BDC80CAF}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Produtores", "src\RabbitMq\Produtores", "{E54BC783-D410-4AB2-9F27-4093BDC80CAF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CadastroProdutor", "CadastroProdutor\CadastroProdutor.csproj", "{9054D6AE-CC3C-4997-9292-907AC0541CA4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CadastroProdutor", "src\RabbitMq\Produtores\CadastroProdutor\CadastroProdutor.csproj", "{9054D6AE-CC3C-4997-9292-907AC0541CA4}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Consumidores", "Consumidores", "{73B5100A-55B2-40CD-977D-53F723CC21DE}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Consumidores", "src\RabbitMq\Consumidores", "{73B5100A-55B2-40CD-977D-53F723CC21DE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CadastroConsumidor", "CadastroConsumidor\CadastroConsumidor.csproj", "{9194564C-84FE-402B-A391-BB0E696392D1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CadastroConsumidor", "src\RabbitMq\Consumidores\CadastroConsumidor\CadastroConsumidor.csproj", "{9194564C-84FE-402B-A391-BB0E696392D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtualizacaoProdutor", "AtualizacaoProdutor\AtualizacaoProdutor.csproj", "{47CF343F-20AC-44E0-B958-65BF5EB6CF68}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtualizacaoProdutor", "src\RabbitMq\Produtores\AtualizacaoProdutor\AtualizacaoProdutor.csproj", "{47CF343F-20AC-44E0-B958-65BF5EB6CF68}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtualizacaoConsumidor", "AtualizacaoConsumidor\AtualizacaoConsumidor.csproj", "{97B74D52-CECA-4594-81DE-37B977EC0BB9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtualizacaoConsumidor", "src\RabbitMq\Consumidores\AtualizacaoConsumidor\AtualizacaoConsumidor.csproj", "{97B74D52-CECA-4594-81DE-37B977EC0BB9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExclusaoProdutor", "ExclusaoProdutor\ExclusaoProdutor.csproj", "{F0F1A9AF-F4EB-456F-9CD0-50E98E269503}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExclusaoProdutor", "src\RabbitMq\Produtores\ExclusaoProdutor\ExclusaoProdutor.csproj", "{F0F1A9AF-F4EB-456F-9CD0-50E98E269503}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExclusaoConsumidor", "ExclusaoConsumidor\ExclusaoConsumidor.csproj", "{62ADFC51-B30D-4DEB-9F98-38D9364675D9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExclusaoConsumidor", "src\RabbitMq\Consumidores\ExclusaoConsumidor\ExclusaoConsumidor.csproj", "{62ADFC51-B30D-4DEB-9F98-38D9364675D9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6F5C944E-5753-4849-8D55-56C4ED3A3148}"
 	ProjectSection(SolutionItems) = preProject

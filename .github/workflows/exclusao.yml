@@ -6,9 +6,9 @@ on:
       - develop
       - master 
     paths:
-      - 'Exclusao/**'             
-      - 'ExclusaoProdutor/**'     
-      - 'ExclusaoConsumidor/**'   
+      - 'src/Microservicos/Exclusao/**'             
+      - 'src/RabbitMq/Produtores/ExclusaoProdutor/**'     
+      - 'src/RabbitMq/Consumidores/ExclusaoConsumidor/**'   
 
 jobs:
   build:
@@ -22,8 +22,8 @@ jobs:
         with:
           dotnet-version: 8.0.x
       - name: Restore dependencies
-        run: dotnet restore Exclusao/Exclusao.csproj
+        run: dotnet restore src/Microservicos/Exclusao/Exclusao.csproj
       - name: Build Exclusão
-        run: dotnet build Exclusao/Exclusao.csproj --no-restore
+        run: dotnet build src/Microservicos/Exclusao/Exclusao.csproj --no-restore
       - name: Test Exclusão
-        run: dotnet test Exclusao/Exclusao.csproj --no-build --verbosity normal
+        run: dotnet test src/Microservicos/Exclusao/Exclusao.csproj --no-build --verbosity normal

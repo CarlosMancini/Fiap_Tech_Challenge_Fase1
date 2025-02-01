@@ -6,9 +6,9 @@ on:
       - develop
       - master 
     paths:
-      - 'Cadastro/**'             
-      - 'CadastroProdutor/**'     
-      - 'CadastroConsumidor/**'   
+      - 'src/Microservicos/Cadastro/**'             
+      - 'src/RabbitMq/Produtores/CadastroProdutor/**'     
+      - 'src/RabbitMq/Consumidores/CadastroConsumidor/**'   
 
 jobs:
   build:
@@ -22,8 +22,8 @@ jobs:
         with:
           dotnet-version: 8.0.x
       - name: Restore dependencies
-        run: dotnet restore Cadastro/Cadastro.csproj
+        run: dotnet restore src/Microservicos/Cadastro/Cadastro.csproj
       - name: Build Cadastro
-        run: dotnet build Cadastro/Cadastro.csproj --no-restore
+        run: dotnet build src/Microservicos/Cadastro/Cadastro.csproj --no-restore
       - name: Test Cadastro
-        run: dotnet test Cadastro/Cadastro.csproj --no-build --verbosity normal
+        run: dotnet test src/Microservicos/Cadastro/Cadastro.csproj --no-build --verbosity normal

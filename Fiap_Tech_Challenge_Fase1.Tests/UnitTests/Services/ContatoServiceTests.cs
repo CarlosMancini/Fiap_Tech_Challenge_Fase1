@@ -37,7 +37,7 @@ namespace Fiap_Tech_Challenge_Fase1.Tests.UnitTests.Services
             var contatoExistente = new Contato
             {
                 ContatoNome = "Bruce Wayne",
-                ContatoTelefone = "11999999999",
+                ContatoTelefone = "61999999999",
                 ContatoEmail = "bruce.wayne@wayneltda.com.br"
             };
 
@@ -46,7 +46,7 @@ namespace Fiap_Tech_Challenge_Fase1.Tests.UnitTests.Services
             var novoContato = new Contato
             {
                 ContatoNome = "Bruce Wayne",
-                ContatoTelefone = "11999999999",
+                ContatoTelefone = "61999999999",
                 ContatoEmail = "bruce.wayne@wayneltda.com.br"
             };
 
@@ -62,7 +62,7 @@ namespace Fiap_Tech_Challenge_Fase1.Tests.UnitTests.Services
             var contato = new Contato
             {
                 ContatoNome = "Bruce Wayne",
-                ContatoTelefone = "11999999999",
+                ContatoTelefone = "61999999999",
                 ContatoEmail = "bruce.wayne@wayneltda.com.br"
             };
 

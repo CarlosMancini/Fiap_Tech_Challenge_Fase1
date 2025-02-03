@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: cadastro-consumidor
-          image: manciniCadu/cadastro-consumidor:latest
+          image: mancinicadu/cadastro-consumidor:1.0
           ports:
             - containerPort: 80
           env:

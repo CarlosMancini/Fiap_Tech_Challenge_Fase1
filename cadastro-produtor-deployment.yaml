@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cadastro-produtor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cadastro-produtor
+  template:
+    metadata:
+      labels:
+        app: cadastro-produtor
+    spec:
+      containers:
+        - name: cadastro-produtor
+          image: mancinicadu/cadastro-produtor:1.0
+          ports:
+            - containerPort: 80
+          env:
+            - name: CONNECTION_STRING
+              value: "Server=sqlserver,1433;Database=CadastroProdutor;User Id=sa;Password=YourStrong!Passw0rd;"
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"

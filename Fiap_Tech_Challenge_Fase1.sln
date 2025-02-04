@@ -50,21 +50,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "k8s", "k8s", "{FB6C00B3-083
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deployment", "k8s\deployment", "{A008F78F-3910-450E-980C-AB754DEE9201}"
 	ProjectSection(SolutionItems) = preProject
-		cadastro-consumidor-deployment.yaml = cadastro-consumidor-deployment.yaml
-		sqlserver-deployment.yaml = sqlserver-deployment.yaml
+		k8s\deployment\cadastro-consumidor-deployment.yaml = k8s\deployment\cadastro-consumidor-deployment.yaml
+		k8s\deployment\sqlserver-deployment.yaml = k8s\deployment\sqlserver-deployment.yaml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "services", "k8s\services", "{20243353-AB3C-4EB0-B2D5-7DC075897435}"
 	ProjectSection(SolutionItems) = preProject
-		cadastro-consumidor-service.yaml = cadastro-consumidor-service.yaml
-		sqlserver-service.yaml = sqlserver-service.yaml
+		k8s\services\cadastro-consumidor-service.yaml = k8s\services\cadastro-consumidor-service.yaml
+		k8s\services\sqlserver-service.yaml = k8s\services\sqlserver-service.yaml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "configMaps", "k8s\configMaps", "{6FE674F2-44E1-40A7-B1A9-A5BC9F97AD14}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "volumes", "k8s\volumes", "{4BADF0E7-B69F-4235-8F38-6D246B961A25}"
 	ProjectSection(SolutionItems) = preProject
-		sqlserver-pvc.yaml = sqlserver-pvc.yaml
+		k8s\volumes\sqlserver-pvc.yaml = k8s\volumes\sqlserver-pvc.yaml
 	EndProjectSection
 EndProject
 Global
